@@ -207,9 +207,9 @@ class Translator:
                 case "INPUT_INT":
                     deep += 1
                     if deep < 7:
-                        self.instructions.append([Opcodes.IN, 0, deep, 1])
+                        self.instructions.append([Opcodes.IN, 0, deep, 2])
                     else:
-                        self.instructions.append([Opcodes.IN, 0, 7, 1])
+                        self.instructions.append([Opcodes.IN, 0, 7, 2])
                         self.instructions.append([Opcodes.PUSH, 0, 0, 7])
 
     def trans_let(self, index):

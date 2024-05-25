@@ -147,7 +147,6 @@ class Middleware():
             case Signal_ar.SIGNAL_AR_ALU:
                 self.ar.decimal = self.datapath.alu.result.decimal
 
-@jitclass()
 class RegisterBaseCell:
     def __init__(self, binary):
         self.decimal = int(binary, 2)
@@ -172,7 +171,6 @@ class RegisterBaseCell:
     def __ne__(self, other):
         return self.decimal != other
 
-@jitclass()
 class Memory:
     def __init__(self, memory_cells):
         self.memory_cells:list[RegisterBaseCell] = [RegisterBaseCell(x) for x in memory_cells]

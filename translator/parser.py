@@ -60,8 +60,8 @@ class RuToken(Enum):
     NUMBER = r"-?[0-9]+"
 
 def parser(program):
-    regex = "|".join(f"(?P<{t.name}>{t.value})" for t in RuToken)
-    # regex = "|".join(f"(?P<{t.name}>{t.value})" for t in Token)
+    # regex = "|".join(f"(?P<{t.name}>{t.value})" for t in RuToken)
+    regex = "|".join(f"(?P<{t.name}>{t.value})" for t in Token)
     found_tokens = re.finditer(regex, program)
     tokens = []
     for token in found_tokens:

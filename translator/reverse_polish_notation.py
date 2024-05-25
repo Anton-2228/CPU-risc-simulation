@@ -47,8 +47,8 @@ RUS_OPERATORS = {"умножить": (4, op_mul),
 def shunting_yard(parsed_formula):
     stack = []
     for token in parsed_formula:
-        if token[1] in RUS_OPERATORS:
-            while stack and stack[-1][1] != "(" and RUS_OPERATORS[token[1]][0] <= RUS_OPERATORS[stack[-1][1]][0]:
+        if token[1] in OPERATORS:
+            while stack and stack[-1][1] != "(" and OPERATORS[token[1]][0] <= OPERATORS[stack[-1][1]][0]:
                 yield stack.pop()
             stack.append(token)
         elif token[1] == ")":

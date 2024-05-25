@@ -1,5 +1,5 @@
 let total = 0;
-let number = 100;
+let number = input_int;
 let counter = 0;
 while (counter < number+1) {
     if (counter % 3 == 0 | counter % 5 == 0) {

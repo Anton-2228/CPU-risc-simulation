@@ -1,19 +1,22 @@
 from CPU import *
+from json import loads
 
 class IOController:
-    def __init__(self, input):
+    def __init__(self, input_str_file, input_int_file):
         self.datapath:Datapath = None
         self.current_port = None
-        input_obr = []
-        for i in input:
-            input_obr += [len(list(i))]+list(i)
-        # print(input_obr)
-        self.input_buffers = {1:input_obr,
-                              2:[]}
+        input_int = loads(input_int_file.read())
+        input_str = loads(input_str_file.read())
+
+        # print(input_int["inputs"])
+        # print(input_str["inputs"])
+
+        self.input_buffers = {1:input_str,
+                              2:input_int}
         self.output_buffers = {1:[],
                                2:[]}
-        self.output_file = {1:open("output1.txt", "w"),
-                            2:open("output2.txt", "w")}
+        self.output_file = {1:open("output_str.txt", "w"),
+                            2:open("output_int.txt", "w")}
 
     def latch_port(self, signal):
         match signal:
@@ -47,9 +50,10 @@ class IOController:
         # print(self.output_buffers[1])
 
     def get_top_buffer(self, port):
-        # print(self.input_buffers[1])
-        # print(self.input_buffers[port])
-        if isinstance(self.input_buffers[port][0], str):
-            return ord(self.input_buffers[port].pop(0))
-        else:
-            return self.input_buffers[port].pop(0)
+        if port == 1:
+            if isinstance(self.input_buffers[port]["inputs"][0], str):
+                return ord(self.input_buffers[port]["inputs"].pop(0))
+            elif isinstance(self.input_buffers[port]["inputs"][0], int):
+                return self.input_buffers[port]["inputs"].pop(0)
+        elif port == 2:
+            return self.input_buffers[port]["inputs"].pop(0)
