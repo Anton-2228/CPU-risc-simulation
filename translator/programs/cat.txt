@@ -1,0 +1,2 @@
+let name = input_str;
+print_str(name);

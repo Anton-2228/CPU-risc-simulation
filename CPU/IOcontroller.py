@@ -8,15 +8,12 @@ class IOController:
         input_int = loads(input_int_file.read())
         input_str = loads(input_str_file.read())
 
-        # print(input_int["inputs"])
-        # print(input_str["inputs"])
-
         self.input_buffers = {1:input_str,
                               2:input_int}
         self.output_buffers = {1:[],
                                2:[]}
-        self.output_file = {1:open("output_str.txt", "w"),
-                            2:open("output_int.txt", "w")}
+        self.output_file = {1:open("outputs/output_str.txt", "w"),
+                            2:open("outputs/output_int.txt", "w")}
 
     def latch_port(self, signal):
         match signal:
