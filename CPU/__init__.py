@@ -1,3 +1,5 @@
+# ruff: noqa: F403, F405
+
 from CPU.isa import *
 from CPU.logger import *
 from CPU.middleware import *

@@ -3,7 +3,6 @@ import sys
 from reverse_polish_notation import reverse_polish_notation
 from parser import parser
 from CPU.isa import Opcodes
-import argparse
 
 class Translator:
     def __init__(self):
@@ -395,7 +394,7 @@ class Translator:
             for y, z in enumerate(self.instructions[x]):
                 if isinstance(self.instructions[x][y], tuple):
                     if self.instructions[x][y][0] in self.vars and self.instructions[x][y][1] == 0:
-                        if self.vars[self.instructions[x][y][0]] == None:
+                        if self.vars[self.instructions[x][y][0]] is None:
                             self.vars[self.instructions[x][y][0]] = index
                             index += 1
                         self.instructions[x][y] = self.vars[self.instructions[x][y][0]]
@@ -404,7 +403,7 @@ class Translator:
             for y, z in enumerate(self.instructions[x]):
                 if isinstance(self.instructions[x][y], tuple):
                     if self.instructions[x][y][0] in self.strings and self.instructions[x][y][1] == 2:
-                        if self.strings[self.instructions[x][y][0]] == None:
+                        if self.strings[self.instructions[x][y][0]] is None:
                             self.strings[self.instructions[x][y][0]] = index
                             index += 20
                         self.instructions[x][y] = self.strings[self.instructions[x][y][0]]

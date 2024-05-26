@@ -1,7 +1,8 @@
+# ruff: noqa: F403, F405
+
 # from datapath import Datapath
 # from control_unit import ControlUnit
 # from middleware import Middleware, Memory
-import numpy as np
 
 from CPU import *
 

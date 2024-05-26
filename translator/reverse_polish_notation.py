@@ -1,5 +1,3 @@
-from parser import parser
-from parser import Token, RuToken
 
 def op_plus(x,y):
     return x+y

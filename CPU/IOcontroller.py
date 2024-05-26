@@ -1,3 +1,5 @@
+# ruff: noqa: F403, F405
+
 from CPU import *
 from json import loads
 

@@ -1,13 +1,10 @@
-from enum import Enum
+# ruff: noqa: F403, F405
 
-import numba
-from numba.experimental import jitclass
-from bitstring import BitArray
+from enum import Enum
 
 # from datapath import Datapath
 # from control_unit import ControlUnit
 from CPU import *
-from functools import lru_cache
 
 class Signal_ip(Enum):
     SIGNAL_IP_INC = "signal_ip_inc"

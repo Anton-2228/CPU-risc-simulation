@@ -1,3 +1,5 @@
+# ruff: noqa: F403, F405
+
 # from isa import *
 # from middleware import *
 # from datapath import Datapath
