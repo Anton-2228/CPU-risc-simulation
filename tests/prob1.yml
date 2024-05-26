@@ -10,7 +10,11 @@ in_source: |-
   }
   print_int(total);
 in_str_stdin: |
-  {}
+  {
+    "inputs": [
+
+    ]
+  }
 in_int_stdin: |
   {
     "inputs": [

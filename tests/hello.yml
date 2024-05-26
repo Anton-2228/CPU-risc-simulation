@@ -2,9 +2,17 @@ in_source: |-
   let hello = 'hello world!';
   print_str(hello);
 in_str_stdin: |
-  {}
+  {
+    "inputs": [
+
+    ]
+  }
 in_int_stdin: |
-  {}
+  {
+    "inputs": [
+
+    ]
+  }
 out_code: |-
   10101100010000000000000000001100
   01111100010000000000000000100111
