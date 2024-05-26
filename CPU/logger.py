@@ -8,7 +8,8 @@ from CPU import *
 class Logger:
     file = None
     def init(file):
-        Logger.file = open(file, "w")
+        # Logger.file = open(file, "w")
+        Logger.file = file
     line = ""
     logs:dict[str, list[RegisterBaseCell]] = {"pc":[],
             "ar":[],

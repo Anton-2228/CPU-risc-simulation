@@ -206,19 +206,18 @@ class ControlUnit:
                     self.datapath.latch_general_regs(Signal_gen_reg(f"signal_gen_reg_{first_operand}_alu"), 0)
             case Opcodes.HALT.value:
                 # print([x.decimal for x in self.middleware.memory.memory_cells[:50]])
-                sys.exit()
+                return 1
+        return 0
         # print([x.decimal for x in self.middleware.memory.memory_cells[:50]])
 
     def start(self):
-        # n = 0
         Logger.update(self.datapath, self, self.middleware)
         while True:
-            # if n == 20:
-            #     sys.exit()
             Logger.log(self.datapath, self, self.middleware)
             self.middleware.latch_ar(Signal_ar.SIGNAL_AR_IP)
             self.latch_ip(Signal_ip.SIGNAL_IP_INC)
             self.middleware.read_from_mem()
             self.middleware.latch_dr()
-            self.decoder()
-            # n += 1
+            ret = self.decoder()
+            if ret == 1:
+                return

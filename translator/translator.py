@@ -17,7 +17,6 @@ class Translator:
 
     def trans_expr(self, expr):
         polish = reverse_polish_notation(expr)
-        print(polish)
         deep = 0
         for i in polish:
             match i[0]:
@@ -230,9 +229,6 @@ class Translator:
 
     def trans_var(self, index):
         index_end = index
-        # print(index)
-        # print(self.tokens)
-        # print(self.instructions)
         while tokens[index_end][0] != "SEMICOLON":
             index_end += 1
         var = tokens[index][1]
@@ -264,7 +260,6 @@ class Translator:
         self.trans_expr(expr)
         self.instructions.append([Opcodes.CMP, 1, 1, 0])
         tmp_var = str(self.tmp_var_counter)
-        # print(self.tmp_var_counter)
         self.tmp_var_counter += 1
         self.tmp_vars[tmp_var] = None
         self.instructions.append([Opcodes.JUMPNZ, 1, 0, (tmp_var, 1)])
@@ -274,7 +269,6 @@ class Translator:
         return end_while
 
     def trans_if(self, index):
-        # print(tokens[index])
         st_expr = index + 2
         end_expr = st_expr
         count_bracket = 0
@@ -317,6 +311,7 @@ class Translator:
     def trans_print_str(self, index):
         self.instructions.append([Opcodes.LOAD, 1, 1, (self.tokens[index+2][1], 0)])
         self.instructions.append([Opcodes.LOAD, 0, 2, 1])
+        # self.instructions.append([Opcodes.OUT, 0, 2, 1])
         start_print = len(self.instructions)
         self.instructions.append([Opcodes.CMP, 1, 2, 0])
         self.instructions.append([Opcodes.JUMPZ, 1, 0, start_print+7])
@@ -387,9 +382,6 @@ class Translator:
                         self.instructions[x][y] = self.tmp_vars[self.instructions[x][y][0]]
 
         index = len(self.instructions) + 1
-        # print(index)
-        # print(self.vars)
-        # print(self.instructions)
         for x, i in enumerate(self.instructions):
             for y, z in enumerate(self.instructions[x]):
                 if isinstance(self.instructions[x][y], tuple):
@@ -414,8 +406,6 @@ class Translator:
                     if self.instructions[x][y][0] in self.strings and self.instructions[x][y][1] == 3:
                         if not isinstance(self.strings[self.instructions[x][y][0]], list):
                             self.strings[self.instructions[x][y][0]] = [index, index]
-                        print(self.strings[self.instructions[x][y][0]])
-                        print(self.instructions[x][y])
                         self.strings[self.instructions[x][y][0]][1] = index
                         if self.instructions[x][y][2] == 1:
                             self.instructions[x][y] = self.strings[self.instructions[x][y][0]][1]
@@ -449,10 +439,8 @@ if __name__ == "__main__":
     args = sys.argv
     input_file = open(args[1], "r", encoding="utf-8")
     target_file = open(args[2], "w")
-    print(sys.argv, "\n")
 
     tokens = parser(input_file.read())
-    print(tokens)
 
     translator = Translator()
     translator.tokens = tokens
