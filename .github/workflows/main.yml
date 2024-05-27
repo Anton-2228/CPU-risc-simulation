@@ -17,7 +17,7 @@ jobs:
 
       - name: install deps
         run: |
-          PYTHONPATH=/home/runner/work/CPU-risc-simulation/CPU-risc-simulation/.
+          "PYTHONPATH=/home/runner/work/CPU-risc-simulation/CPU-risc-simulation/." >> ~/.bashrc
           source .bashrc
           python -m pip install -r "requirements.txt"
 
