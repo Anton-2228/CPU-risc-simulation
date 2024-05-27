@@ -2,7 +2,7 @@ let total = 0;
 let number = input_int;
 let counter = 0;
 while (counter < number+1) {
-    if (counter % 3 == 0 & counter % 5 == 0) {
+    if (counter % 3 == 0 | counter % 5 == 0) {
         total = total + counter;
     }
     counter = counter + 1;

@@ -429,7 +429,7 @@ class Translator:
 
 def generate_machine_instruction(raw_instr, res_file):
     instructions = []
-    raw_instr.append([Opcodes.HALT, 0,0,0])
+    # raw_instr.append([Opcodes.HALT, 0,0,0])
     for i in raw_instr:
         instr = ""
 
@@ -448,7 +448,7 @@ def generate_machine_instruction(raw_instr, res_file):
         instructions.append(instr)
         instr += "\n"
         res_file.writelines(instr)
-    # res_file.writelines("10110000000000000000000000000000")
+    res_file.writelines("10111000000000000000000000000000")
 
 if __name__ == "__main__":
     args = sys.argv
@@ -457,7 +457,7 @@ if __name__ == "__main__":
 
     tokens = parser(input_file.read())
 
-    print(tokens)
+    # print(tokens)
     res = AST_syntax_check(tokens)
     assert res == True, "Ошибка в абстрактном синтаксическом дереве"
 
@@ -466,6 +466,6 @@ if __name__ == "__main__":
 
     translator.translate(0)
     translator.insert_vars()
-    print(translator.instructions)
+    # print(translator.instructions)
 
     generate_machine_instruction(translator.instructions, target_file)
