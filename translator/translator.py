@@ -460,7 +460,7 @@ if __name__ == "__main__":
 
     # print(tokens)
     res = AST_syntax_check(tokens)
-    assert res == True, "Ошибка в абстрактном синтаксическом дереве"
+    assert res, "Ошибка в абстрактном синтаксическом дереве"
 
     translator = Translator()
     translator.tokens = tokens
