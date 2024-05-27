@@ -451,6 +451,7 @@ def generate_machine_instruction(raw_instr, res_file):
     res_file.writelines("10111000000000000000000000000000")
 
 if __name__ == "__main__":
+    a = 2
     args = sys.argv
     input_file = open(args[1], "r", encoding="utf-8")
     target_file = open(args[2], "w")
