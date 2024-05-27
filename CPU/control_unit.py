@@ -4,7 +4,6 @@
 # from middleware import *
 # from datapath import Datapath
 # from CPU import *
-import sys
 
 from CPU import *
 
@@ -82,6 +81,14 @@ class ControlUnit:
                 elif addr_type == 1:
                     self.datapath.latch_right_alu(Signal_right_alu.SIGNAL_RIGHT_ALU_DATA_REG)
                 self.datapath.alu.or_()
+                self.datapath.latch_general_regs(Signal_gen_reg(f"signal_gen_reg_{first_operand}_alu"), 0)
+            case Opcodes.AND.value:
+                self.datapath.latch_left_alu(Signal_left_alu(f"signal_left_alu_gen_reg_{first_operand}"))
+                if addr_type == 0:
+                    self.datapath.latch_right_alu(Signal_right_alu(f"signal_right_alu_gen_reg_{second_operand}"))
+                elif addr_type == 1:
+                    self.datapath.latch_right_alu(Signal_right_alu.SIGNAL_RIGHT_ALU_DATA_REG)
+                self.datapath.alu.and_()
                 self.datapath.latch_general_regs(Signal_gen_reg(f"signal_gen_reg_{first_operand}_alu"), 0)
             case Opcodes.INC.value:
                 self.datapath.latch_left_alu(Signal_left_alu(f"signal_left_alu_gen_reg_{first_operand}"))
@@ -212,6 +219,7 @@ class ControlUnit:
 
     def start(self):
         Logger.update(self.datapath, self, self.middleware)
+        n = 0
         while True:
             Logger.log(self.datapath, self, self.middleware)
             self.middleware.latch_ar(Signal_ar.SIGNAL_AR_IP)
@@ -219,5 +227,7 @@ class ControlUnit:
             self.middleware.read_from_mem()
             self.middleware.latch_dr()
             ret = self.decoder()
+            n += 1
             if ret == 1:
+                # print(n)
                 return

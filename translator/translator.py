@@ -3,6 +3,8 @@ import sys
 from reverse_polish_notation import reverse_polish_notation
 from parser import parser
 from CPU.isa import Opcodes
+from ast_check import AST_syntax_check
+
 
 class Translator:
     def __init__(self):
@@ -90,6 +92,18 @@ class Translator:
                         self.instructions.append([Opcodes.POP, 0, 0, 8])
                         self.instructions.append([Opcodes.POP, 0, 0, 7])
                         self.instructions.append([Opcodes.OR, 0, 7, 8])
+                        self.instructions.append([Opcodes.PUSH, 0, 0, 7])
+                    deep -= 1
+                case "AND":
+                    if deep < 7:
+                        self.instructions.append([Opcodes.AND, 0, deep - 1, deep])
+                    elif deep == 7:
+                        self.instructions.append([Opcodes.POP, 0, 0, 7])
+                        self.instructions.append([Opcodes.AND, 0, 6, 7])
+                    else:
+                        self.instructions.append([Opcodes.POP, 0, 0, 8])
+                        self.instructions.append([Opcodes.POP, 0, 0, 7])
+                        self.instructions.append([Opcodes.AND, 0, 7, 8])
                         self.instructions.append([Opcodes.PUSH, 0, 0, 7])
                     deep -= 1
                 case "NEQ":
@@ -415,6 +429,7 @@ class Translator:
 
 def generate_machine_instruction(raw_instr, res_file):
     instructions = []
+    # raw_instr.append([Opcodes.HALT, 0,0,0])
     for i in raw_instr:
         instr = ""
 
@@ -433,19 +448,25 @@ def generate_machine_instruction(raw_instr, res_file):
         instructions.append(instr)
         instr += "\n"
         res_file.writelines(instr)
-    res_file.writelines("10110000000000000000000000000000")
+    res_file.writelines("10111000000000000000000000000000")
 
 if __name__ == "__main__":
+    a = 2
     args = sys.argv
     input_file = open(args[1], "r", encoding="utf-8")
     target_file = open(args[2], "w")
 
     tokens = parser(input_file.read())
 
+    # print(tokens)
+    res = AST_syntax_check(tokens)
+    assert res, "Ошибка в абстрактном синтаксическом дереве"
+
     translator = Translator()
     translator.tokens = tokens
 
     translator.translate(0)
     translator.insert_vars()
+    # print(translator.instructions)
 
     generate_machine_instruction(translator.instructions, target_file)

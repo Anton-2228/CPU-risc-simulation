@@ -5,6 +5,7 @@
 # from middleware import Middleware, Memory
 
 from CPU import *
+import sys
 
 if __name__ == "__main__":
     args = sys.argv
