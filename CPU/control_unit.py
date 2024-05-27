@@ -1,4 +1,4 @@
-# ruff: noqa: F403, F405
+ruff: noqa: F403, F405
 
 # from isa import *
 # from middleware import *
@@ -221,8 +221,6 @@ class ControlUnit:
         Logger.update(self.datapath, self, self.middleware)
         n = 0
         while True:
-            if n == 4:
-                b = 2;
             Logger.log(self.datapath, self, self.middleware)
             self.middleware.latch_ar(Signal_ar.SIGNAL_AR_IP)
             self.latch_ip(Signal_ip.SIGNAL_IP_INC)
