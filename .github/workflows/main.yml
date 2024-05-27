@@ -17,7 +17,7 @@ jobs:
 
       - name: install deps
         run: |
-          export PYTHONPATH=./CPU-risc-simulation
+          export PYTHONPATH=/home/runner/work/CPU-risc-simulation/CPU-risc-simulation/
           python -m pip install -r "requirements.txt"
 
       - name: run lints
