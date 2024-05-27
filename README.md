@@ -6,6 +6,7 @@
 Базовый вариант
 
 ## Язык программирования - Алгоритмический 
+### Синтаксис языка
 ```ebnf
 <program> ::= <statement>
 <statement> ::= "while (" <expression> ")" "{" <statement> "}"
@@ -24,6 +25,19 @@
 <num> ::= -?[0-9]+
 <var> ::= [a-zA-Z]*
 <string> ::= [\w\s,.:;!?()\\-]+
+```
+### Пример кода
+```ebnf
+let total = 0;
+let number = input_int;
+let counter = 0;
+while (counter < number+1) {
+    if (counter % 3 == 0 | counter % 5 == 0) {
+        total = total + counter;
+    }
+    counter = counter + 1;
+}
+print_int(total);
 ```
 
 ## Организация памяти
