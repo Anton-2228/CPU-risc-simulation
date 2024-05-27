@@ -16,7 +16,9 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: install deps
-        run: python -m pip install -r "requirements.txt"
+        run: |
+          export PYTHONPATH=.
+          python -m pip install -r "requirements.txt"
 
       - name: run lints
         run: python -m ruff .
