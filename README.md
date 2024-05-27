@@ -15,8 +15,8 @@
               | "print_int (" {expression} ");"
               | "print_str (" (<var> | "'" <string> "'") ");"
 
-<expression> ::= {<expression unit>}
-<expression unit> ::= [(<operand> | ")")] [<term>] [(<operand> | "(")]
+<expression> ::= {<expression_unit>}
+<expression_unit> ::= [(<operand> | ")")] [<term>] [(<operand> | "(")]
 <term> ::= "+" | "-" | "*" | "/" | "%" | "|" | "==" | "!=" | ">" | "<" 
 <operand> ::= <var> | <num> | input_int 
 <input_string> ::= "input_str"
