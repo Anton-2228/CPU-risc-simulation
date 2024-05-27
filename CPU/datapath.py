@@ -34,7 +34,11 @@ class ALU:
         self.set_flags()
 
     def or_(self):
-        self.result.decimal = self.left_input.decimal or self.right_input.decimal
+        self.result.decimal = self.left_input.decimal | self.right_input.decimal
+        self.set_flags()
+
+    def and_(self):
+        self.result.decimal = self.left_input.decimal & self.right_input.decimal
         self.set_flags()
 
     def inc(self):

@@ -39,7 +39,7 @@
 ### Инструкции
 
 #### Формат машинных инструкций
-Все инструкции представлены в виде:
+Все инструкции представлены в бинарном виде в формате:
 ```
 Опкод | Тип адресации | Номер регистра(Первый операнд) | Второй операнд
 00000 | 0             | 0000                           | 0000000000000000000000
@@ -104,14 +104,14 @@
 ## Транслятор
 Интерфейс командной строки: `python translator.py <input_file> <target_file>`
 
-Реализация представлена в [translator](/translator/translator.py)
+Реализация представлена в [translator](./translator/)
 
 Трансляция происходит в 2 этапа:
 - Парсинг текста программы и преобразование его в последовательность токенов
 - Генерация машинного кода
 
 ## Модель процессора
-Интерфейс командной строки: `python main.py <input_file> <target_file>`
+Интерфейс командной строки: `python main.py <target_file> <input_str_file> <input_int_file> <output_str_file> <output_int_file> <log_file>`
 
 Реализация представлена в [processor](./CPU/)
 
@@ -157,66 +157,47 @@ Datapath включает в себя регистры общего назнач
 На правый вход АЛУ может быть подано значение одного из регистров общего назначения, 
 либо 2 операнд инструкции(из регистра данных).
 
-
 #### Флаги
 В результате выполнения операции АЛУ выставляет 2 флага:
 - zero - результат операции равен нулю
 - neg - результат операции отрицателен
 
 ## Тестирование
-Тестирование происходит с использование golden tests в формате yaml файлов. Тесты лежат в папке [tests](/tests/)
+Интерфейс командной строки: `python -m pytest golden_test.py`
 
-[Тесты](golden_test.py) реализованы в виде скрипта на Python с использованием библиотеки pytest
+Реализация представлена в [golden_test](./golden_test.py)
+
+Тестирование происходит с использование golden tests в формате yaml файлов. Тесты лежат в папке [tests](./tests/)
+
+Тестирование реализованы в виде скрипта на Python с использованием библиотеки pytest
 
 
 Каждый тест содержит в себе:
-- Исходный код на языке программирования
+- Исходный код на высокоуровневом языке программирования
+- Входные данные в json формате
 - Результат работы транслятора
-- Консольный вывод
+- Вывод программы(json файл, созданный IO контроллером)
 - Журнал работы процессора
 
-Тесты представлены для следующий програм:
-- [hello.asm](/asm_scripts/hello.asm)
-- [cat.asm](/asm_scripts/cat.asm)
-- [hello_username.asm](/asm_scripts/hello_username.asm)
-- [prob1.asm](/asm_scripts/prob1.asm)
-
-### Подробный разбор hello_username
-- Исходный код на языке программирования: [hello_username.asm](./asm_scripts/hello_username.asm)
-
-- Распиание прерываний: 
-_строка "Egor\0"_
-```
-[
-  [0, 69],
-  [1, 103],
-  [2, 111],
-  [4, 114],
-  [10, 0]
-]
-```
-
-- Вывод в консоль:
-```
-Enter your name
-Hello, Egor
-```
-- Машинный код: [hello_username/code.json](/asm_scripts/hello_username_logs/code.json)
-- Лог работы процессора: [hello_username/log.txt](/asm_scripts/hello_username_logs/log.txt)
+Тесты представлены для следующих программ:
+- [hello](./tests/programs/hello.txt)
+- [cat](./tests/programs/cat.txt)
+- [hello_user](./tests/programs/hello_user.txt)
+- [prob1](./tests/programs/prob1.txt)
 
 ### CI
 
 [CI](.github/workflows/ci.yml) настроен на выполнение golden test-ов и линтера при каждом push-е в репозиторий
 
 jobs содержит в себе 2 задачи:
-- test - запускающю утилиту pytest для запуска golden test-ов
-- lint - запускающю cargo check для каждого из и трейтов проекта
+- test - запускающую утилиту pytest для запуска golden test-ов
+- lint - запускающую cargo check для каждого из и трейтов проекта
 
 ### Аналитика алгоритмов
 ```
-| Булко Егор Олегович | hello | 17 | - | 9 | 84 | 139 | (asm | risc | harv | hw | instr | struct | trap | port | cstr | prob1) |
-
-| Булко Егор Олегович | cat | 29 | - | 20 | 101 | 286 | (asm | risc | harv | hw | instr | struct | trap | port | cstr | prob1) |
-
-| Булко Егор Олегович | hello_username | 50 | - | 37 | 268 | 529 | (asm | risc | harv | hw | instr | struct | trap | port | cstr | prob1) |
+| ФИО                      | <алг>      | <LoC> | <code байт>   | <code инстр.> | <инстр.> | вариант |
+| Зинченко Антон Андреевич | hello      | 2     | 152           | 38            | 117      | (asm | risc | harv | hw | instr | struct | trap | port | cstr | prob1) |
+| Зинченко Антон Андреевич | cat        | 2     | 96            | 24            | 77       | (asm | risc | harv | hw | instr | struct | trap | port | cstr | prob1) |
+| Зинченко Антон Андреевич | hello_user | 4     | 204           | 51            | 148      | (asm | risc | harv | hw | instr | struct | trap | port | cstr | prob1) |
+| Зинченко Антон Андреевич | prob1      | 10    | 200           | 50            | 3397     | (asm | risc | harv | hw | instr | struct | trap | port | cstr | prob1) |
 ```

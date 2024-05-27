@@ -10,7 +10,10 @@ def op_div(x,y):
 def op_mod(x,y):
     return x%y
 def op_or(x,y):
-    return x or y
+    return x | y
+
+def op_and(x,y):
+    return x & y
 def op_eq(x,y):
     return x == y
 def op_neq(x,y):
@@ -25,10 +28,11 @@ OPERATORS = {"*": (4, op_mul),
              "%": (4, op_mod),
              "+": (3, op_plus),
              "-": (3, op_minux),
-             "==": (1, op_eq),
-             "!=": (1, op_neq),
-             ">": (1, op_gt),
-             "<": (1, op_lt),
+             "==": (2, op_eq),
+             "!=": (2, op_neq),
+             ">": (2, op_gt),
+             "<": (2, op_lt),
+             "&": (1, op_and),
              "|": (0, op_or)}
 
 RUS_OPERATORS = {"умножить": (4, op_mul),
