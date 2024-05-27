@@ -325,7 +325,7 @@ golden_test.py ....                                                             
 
 [CI](.github/workflows/main.yml) настроен на выполнение golden test-ов и линтера при каждом push-е в репозиторий
 
-jobs содержит в себе 2 задачи:
+jobs содержит в себе 3 задачи:
 - install deps - установка зависимостей
 - run lints - запуск линтера
 - run pytest - запуск тестов
