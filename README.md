@@ -165,12 +165,11 @@ Datapath включает в себя регистры общего назнач
 ## Тестирование
 Интерфейс командной строки: `python -m pytest golden_test.py`
 
-Реализация представлена в [golden_test](./golden_test.py)
+Реализация представлена в [golden_test](./golden_test.py).
 
-Тестирование происходит с использование golden tests в формате yaml файлов. Тесты лежат в папке [tests](./tests/)
+Тестирование происходит с использование golden tests в формате yaml файлов. Тесты лежат в папке [tests](./tests/).
 
-Тестирование реализованы в виде скрипта на Python с использованием библиотеки pytest
-
+Тестирование реализованы в виде скрипта на Python с использованием библиотеки pytest.
 
 Каждый тест содержит в себе:
 - Исходный код на высокоуровневом языке программирования
@@ -185,19 +184,157 @@ Datapath включает в себя регистры общего назнач
 - [hello_user](./tests/programs/hello_user.txt)
 - [prob1](./tests/programs/prob1.txt)
 
+### Пример использования на примере программы cat
+```commandline
+(venv) user@user:~/Desktop/CPU-risc-simulation$ cat ./CPU/inputs/input_str.json 
+{
+    "inputs": [
+      5, "S", "a", "s", "h", "a"
+    ]
+  }
+(venv) user@user:~/Desktop/CPU-risc-simulation$ cat ./tests/programs/cat.txt 
+let name = input_str;
+print_str(name);
+(venv) user@user:~/Desktop/CPU-risc-simulation$ python3 ./translator/translator.py ./tests/programs/cat.txt ./CPU/programs/comp.txt 
+(venv) user@user:~/Desktop/CPU-risc-simulation$ cat ./CPU/programs/comp.txt 
+01100000010000000000000000000001
+01001100010000000000000000010100
+10100100000000000000000000000100
+10110100010000000000000000010100
+10000100010000000000000000011001
+10110100110000000000000000011001
+00001100010000000000000000000001
+00000100110000000000000000000001
+01100000100000000000000000000001
+10000000100000000000000000000011
+01001100010000000000000000000000
+10011100000000000000000000000110
+10110100010000000000000000011001
+10000100010000000000000000011000
+01110100010000000000000000011000
+01110000100000000000000000000001
+01001100100000000000000000000000
+10010100000000000000000000010111
+00001100100000000000000000000001
+00000100010000000000000000000001
+01110000110000000000000000000001
+01101000110000000000000000000001
+10001100000000000000000000010000
+(venv) user@user:~/Desktop/CPU-risc-simulation$ python3 ./CPU/main.py ./CPU/programs/comp.txt ./CPU/inputs/input_str.json ./CPU/inputs/input_int.json ./CPU/outputs/output_str.json ./CPU/outputs/output_int.json ./CPU/log.txt 
+(venv) user@user:~/Desktop/CPU-risc-simulation$ cat ./CPU/outputs/output_str.json 
+{"outputs": [83, 97, 115, 104, 97]}
+user@user:~/Desktop/CPU-risc-simulation$ cat ./CPU/log.txt 
+pc: 0 | ar: 0 | dr: 0x60400001 | r1: 0 | r2: 0 | r3: 0 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0xc - IN | pc: 0 -> 1 | ar: 0 | dr: 0x60400001 | r1: 0 -> 5 | r2: 0 | r3: 0 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x9 - CMP | pc: 1 -> 2 | ar: 0 -> 1 | dr: 0x4c400014 | r1: 5 | r2: 0 | r3: 0 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 -> 1 | 
+command: 0x14 - JUMPNEG | pc: 2 -> 4 | ar: 1 -> 2 | dr: 0xa4000004 | r1: 5 | r2: 0 | r3: 0 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 1 | 
+command: 0x10 - STORE | pc: 4 -> 5 | ar: 2 -> 25 | dr: 0x84400019 | r1: 5 | r2: 0 | r3: 0 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 1 -> 0 | 
+command: 0x16 - MOV | pc: 5 -> 6 | ar: 25 -> 5 | dr: 0xb4c00019 | r1: 5 | r2: 0 | r3: 0 -> 25 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x1 - SUB | pc: 6 -> 7 | ar: 5 -> 6 | dr: 0xc400001 | r1: 5 -> 4 | r2: 0 | r3: 25 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x0 - ADD | pc: 7 -> 8 | ar: 6 -> 7 | dr: 0x4c00001 | r1: 4 | r2: 0 | r3: 25 -> 26 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0xc - IN | pc: 8 -> 9 | ar: 7 -> 8 | dr: 0x60800001 | r1: 4 | r2: 0 -> 83 | r3: 26 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x10 - STORE | pc: 9 -> 10 | ar: 8 -> 26 | dr: 0x80800003 | r1: 4 | r2: 83 | r3: 26 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x9 - CMP | pc: 10 -> 11 | ar: 26 -> 10 | dr: 0x4c400000 | r1: 4 | r2: 83 | r3: 26 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x13 - JUMPNZ | pc: 11 -> 6 | ar: 10 -> 11 | dr: 0x9c000006 | r1: 4 | r2: 83 | r3: 26 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x1 - SUB | pc: 6 -> 7 | ar: 11 -> 6 | dr: 0xc400001 | r1: 4 -> 3 | r2: 83 | r3: 26 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x0 - ADD | pc: 7 -> 8 | ar: 6 -> 7 | dr: 0x4c00001 | r1: 3 | r2: 83 | r3: 26 -> 27 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0xc - IN | pc: 8 -> 9 | ar: 7 -> 8 | dr: 0x60800001 | r1: 3 | r2: 83 -> 97 | r3: 27 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x10 - STORE | pc: 9 -> 10 | ar: 8 -> 27 | dr: 0x80800003 | r1: 3 | r2: 97 | r3: 27 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x9 - CMP | pc: 10 -> 11 | ar: 27 -> 10 | dr: 0x4c400000 | r1: 3 | r2: 97 | r3: 27 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x13 - JUMPNZ | pc: 11 -> 6 | ar: 10 -> 11 | dr: 0x9c000006 | r1: 3 | r2: 97 | r3: 27 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x1 - SUB | pc: 6 -> 7 | ar: 11 -> 6 | dr: 0xc400001 | r1: 3 -> 2 | r2: 97 | r3: 27 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x0 - ADD | pc: 7 -> 8 | ar: 6 -> 7 | dr: 0x4c00001 | r1: 2 | r2: 97 | r3: 27 -> 28 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0xc - IN | pc: 8 -> 9 | ar: 7 -> 8 | dr: 0x60800001 | r1: 2 | r2: 97 -> 115 | r3: 28 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x10 - STORE | pc: 9 -> 10 | ar: 8 -> 28 | dr: 0x80800003 | r1: 2 | r2: 115 | r3: 28 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x9 - CMP | pc: 10 -> 11 | ar: 28 -> 10 | dr: 0x4c400000 | r1: 2 | r2: 115 | r3: 28 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x13 - JUMPNZ | pc: 11 -> 6 | ar: 10 -> 11 | dr: 0x9c000006 | r1: 2 | r2: 115 | r3: 28 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x1 - SUB | pc: 6 -> 7 | ar: 11 -> 6 | dr: 0xc400001 | r1: 2 -> 1 | r2: 115 | r3: 28 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x0 - ADD | pc: 7 -> 8 | ar: 6 -> 7 | dr: 0x4c00001 | r1: 1 | r2: 115 | r3: 28 -> 29 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0xc - IN | pc: 8 -> 9 | ar: 7 -> 8 | dr: 0x60800001 | r1: 1 | r2: 115 -> 104 | r3: 29 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x10 - STORE | pc: 9 -> 10 | ar: 8 -> 29 | dr: 0x80800003 | r1: 1 | r2: 104 | r3: 29 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x9 - CMP | pc: 10 -> 11 | ar: 29 -> 10 | dr: 0x4c400000 | r1: 1 | r2: 104 | r3: 29 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x13 - JUMPNZ | pc: 11 -> 6 | ar: 10 -> 11 | dr: 0x9c000006 | r1: 1 | r2: 104 | r3: 29 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x1 - SUB | pc: 6 -> 7 | ar: 11 -> 6 | dr: 0xc400001 | r1: 1 -> 0 | r2: 104 | r3: 29 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 -> 1 | of: 0 | ng: 0 | 
+command: 0x0 - ADD | pc: 7 -> 8 | ar: 6 -> 7 | dr: 0x4c00001 | r1: 0 | r2: 104 | r3: 29 -> 30 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 1 -> 0 | of: 0 | ng: 0 | 
+command: 0xc - IN | pc: 8 -> 9 | ar: 7 -> 8 | dr: 0x60800001 | r1: 0 | r2: 104 -> 97 | r3: 30 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x10 - STORE | pc: 9 -> 10 | ar: 8 -> 30 | dr: 0x80800003 | r1: 0 | r2: 97 | r3: 30 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x9 - CMP | pc: 10 -> 11 | ar: 30 -> 10 | dr: 0x4c400000 | r1: 0 | r2: 97 | r3: 30 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 -> 1 | of: 0 | ng: 0 | 
+command: 0x13 - JUMPNZ | pc: 11 -> 12 | ar: 10 -> 11 | dr: 0x9c000006 | r1: 0 | r2: 97 | r3: 30 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 1 | of: 0 | ng: 0 | 
+command: 0x16 - MOV | pc: 12 -> 13 | ar: 11 -> 12 | dr: 0xb4400019 | r1: 0 -> 25 | r2: 97 | r3: 30 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 1 | of: 0 | ng: 0 | 
+command: 0x10 - STORE | pc: 13 -> 14 | ar: 12 -> 24 | dr: 0x84400018 | r1: 25 | r2: 97 | r3: 30 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 1 -> 0 | of: 0 | ng: 0 | 
+command: 0xe - LOAD | pc: 14 -> 15 | ar: 24 | dr: 0x19 | r1: 25 | r2: 97 | r3: 30 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0xe - LOAD | pc: 15 -> 16 | ar: 24 -> 25 | dr: 0x5 | r1: 25 | r2: 97 -> 5 | r3: 30 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x9 - CMP | pc: 16 -> 17 | ar: 25 -> 16 | dr: 0x4c800000 | r1: 25 | r2: 5 | r3: 30 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x12 - JUMPZ | pc: 17 -> 18 | ar: 16 -> 17 | dr: 0x94000017 | r1: 25 | r2: 5 | r3: 30 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x1 - SUB | pc: 18 -> 19 | ar: 17 -> 18 | dr: 0xc800001 | r1: 25 | r2: 5 -> 4 | r3: 30 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x0 - ADD | pc: 19 -> 20 | ar: 18 -> 19 | dr: 0x4400001 | r1: 25 -> 26 | r2: 4 | r3: 30 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0xe - LOAD | pc: 20 -> 21 | ar: 19 -> 26 | dr: 0x53 | r1: 26 | r2: 4 | r3: 30 -> 83 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0xd - OUT | pc: 21 -> 22 | ar: 26 -> 21 | dr: 0x68c00001 | r1: 26 | r2: 4 | r3: 83 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x11 - JUMP | pc: 22 -> 16 | ar: 21 -> 22 | dr: 0x8c000010 | r1: 26 | r2: 4 | r3: 83 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x9 - CMP | pc: 16 -> 17 | ar: 22 -> 16 | dr: 0x4c800000 | r1: 26 | r2: 4 | r3: 83 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x12 - JUMPZ | pc: 17 -> 18 | ar: 16 -> 17 | dr: 0x94000017 | r1: 26 | r2: 4 | r3: 83 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x1 - SUB | pc: 18 -> 19 | ar: 17 -> 18 | dr: 0xc800001 | r1: 26 | r2: 4 -> 3 | r3: 83 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x0 - ADD | pc: 19 -> 20 | ar: 18 -> 19 | dr: 0x4400001 | r1: 26 -> 27 | r2: 3 | r3: 83 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0xe - LOAD | pc: 20 -> 21 | ar: 19 -> 27 | dr: 0x61 | r1: 27 | r2: 3 | r3: 83 -> 97 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0xd - OUT | pc: 21 -> 22 | ar: 27 -> 21 | dr: 0x68c00001 | r1: 27 | r2: 3 | r3: 97 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x11 - JUMP | pc: 22 -> 16 | ar: 21 -> 22 | dr: 0x8c000010 | r1: 27 | r2: 3 | r3: 97 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x9 - CMP | pc: 16 -> 17 | ar: 22 -> 16 | dr: 0x4c800000 | r1: 27 | r2: 3 | r3: 97 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x12 - JUMPZ | pc: 17 -> 18 | ar: 16 -> 17 | dr: 0x94000017 | r1: 27 | r2: 3 | r3: 97 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x1 - SUB | pc: 18 -> 19 | ar: 17 -> 18 | dr: 0xc800001 | r1: 27 | r2: 3 -> 2 | r3: 97 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x0 - ADD | pc: 19 -> 20 | ar: 18 -> 19 | dr: 0x4400001 | r1: 27 -> 28 | r2: 2 | r3: 97 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0xe - LOAD | pc: 20 -> 21 | ar: 19 -> 28 | dr: 0x73 | r1: 28 | r2: 2 | r3: 97 -> 115 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0xd - OUT | pc: 21 -> 22 | ar: 28 -> 21 | dr: 0x68c00001 | r1: 28 | r2: 2 | r3: 115 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x11 - JUMP | pc: 22 -> 16 | ar: 21 -> 22 | dr: 0x8c000010 | r1: 28 | r2: 2 | r3: 115 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x9 - CMP | pc: 16 -> 17 | ar: 22 -> 16 | dr: 0x4c800000 | r1: 28 | r2: 2 | r3: 115 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x12 - JUMPZ | pc: 17 -> 18 | ar: 16 -> 17 | dr: 0x94000017 | r1: 28 | r2: 2 | r3: 115 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x1 - SUB | pc: 18 -> 19 | ar: 17 -> 18 | dr: 0xc800001 | r1: 28 | r2: 2 -> 1 | r3: 115 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x0 - ADD | pc: 19 -> 20 | ar: 18 -> 19 | dr: 0x4400001 | r1: 28 -> 29 | r2: 1 | r3: 115 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0xe - LOAD | pc: 20 -> 21 | ar: 19 -> 29 | dr: 0x68 | r1: 29 | r2: 1 | r3: 115 -> 104 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0xd - OUT | pc: 21 -> 22 | ar: 29 -> 21 | dr: 0x68c00001 | r1: 29 | r2: 1 | r3: 104 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x11 - JUMP | pc: 22 -> 16 | ar: 21 -> 22 | dr: 0x8c000010 | r1: 29 | r2: 1 | r3: 104 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x9 - CMP | pc: 16 -> 17 | ar: 22 -> 16 | dr: 0x4c800000 | r1: 29 | r2: 1 | r3: 104 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x12 - JUMPZ | pc: 17 -> 18 | ar: 16 -> 17 | dr: 0x94000017 | r1: 29 | r2: 1 | r3: 104 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x1 - SUB | pc: 18 -> 19 | ar: 17 -> 18 | dr: 0xc800001 | r1: 29 | r2: 1 -> 0 | r3: 104 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 -> 1 | of: 0 | ng: 0 | 
+command: 0x0 - ADD | pc: 19 -> 20 | ar: 18 -> 19 | dr: 0x4400001 | r1: 29 -> 30 | r2: 0 | r3: 104 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 1 -> 0 | of: 0 | ng: 0 | 
+command: 0xe - LOAD | pc: 20 -> 21 | ar: 19 -> 30 | dr: 0x61 | r1: 30 | r2: 0 | r3: 104 -> 97 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0xd - OUT | pc: 21 -> 22 | ar: 30 -> 21 | dr: 0x68c00001 | r1: 30 | r2: 0 | r3: 97 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x11 - JUMP | pc: 22 -> 16 | ar: 21 -> 22 | dr: 0x8c000010 | r1: 30 | r2: 0 | r3: 97 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
+command: 0x9 - CMP | pc: 16 -> 17 | ar: 22 -> 16 | dr: 0x4c800000 | r1: 30 | r2: 0 | r3: 97 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 -> 1 | of: 0 | ng: 0 | 
+command: 0x12 - JUMPZ | pc: 17 -> 23 | ar: 16 -> 17 | dr: 0x94000017 | r1: 30 | r2: 0 | r3: 97 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 1 | of: 0 | ng: 0 | 
+(venv) user@user:~/Desktop/CPU-risc-simulation$ 
+```
+
+### Пример проверки исходного теста
+```commandline
+(venv) user@user:~/Desktop/CPU-risc-simulation$ python -m pytest golden_test.py 
+/home/user/Desktop/CPU-risc-simulation/venv/lib/python3.12/site-packages/pytest_golden/plugin.py:53: GoldenTestUsageWarning: Add 'enable_assertion_pass_hook=true' to pytest.ini for safer usage of pytest-golden.
+  warnings.warn(
+========================================================================= test session starts ==========================================================================
+platform linux -- Python 3.12.2, pytest-8.2.1, pluggy-1.5.0
+rootdir: /home/user/Desktop/CPU-risc-simulation
+plugins: golden-0.2.2
+collected 4 items                                                                                                                                                      
+
+golden_test.py ....                                                                                                                                              [100%]
+
+========================================================================== 4 passed in 18.12s ==========================================================================
+(venv) user@user:~/Desktop/CPU-risc-simulation$ 
+```
+
 ### CI
 
-[CI](.github/workflows/ci.yml) настроен на выполнение golden test-ов и линтера при каждом push-е в репозиторий
+[CI](.github/workflows/main.yml) настроен на выполнение golden test-ов и линтера при каждом push-е в репозиторий
 
 jobs содержит в себе 2 задачи:
-- test - запускающую утилиту pytest для запуска golden test-ов
-- lint - запускающую cargo check для каждого из и трейтов проекта
+- install deps - установка зависимостей
+- run lints - запуск линтера
+- run pytest - запуск тестов
 
 ### Аналитика алгоритмов
 ```
 | ФИО                      | <алг>      | <LoC> | <code байт>   | <code инстр.> | <инстр.> | вариант |
-| Зинченко Антон Андреевич | hello      | 2     | 152           | 38            | 117      | (asm | risc | harv | hw | instr | struct | trap | port | cstr | prob1) |
-| Зинченко Антон Андреевич | cat        | 2     | 96            | 24            | 77       | (asm | risc | harv | hw | instr | struct | trap | port | cstr | prob1) |
-| Зинченко Антон Андреевич | hello_user | 4     | 204           | 51            | 148      | (asm | risc | harv | hw | instr | struct | trap | port | cstr | prob1) |
-| Зинченко Антон Андреевич | prob1      | 10    | 200           | 50            | 3397     | (asm | risc | harv | hw | instr | struct | trap | port | cstr | prob1) |
+| Зинченко Антон Андреевич | hello      | 2     | 152           | 38            | 117      | (alg | risc | neum | hw | instr | binary | stream | port | pstr | prob1) |
+| Зинченко Антон Андреевич | cat        | 2     | 96            | 24            | 77       | (alg | risc | neum | hw | instr | binary | stream | port | pstr | prob1) |
+| Зинченко Антон Андреевич | hello_user | 4     | 204           | 51            | 148      | (alg | risc | neum | hw | instr | binary | stream | port | pstr | prob1) |
+| Зинченко Антон Андреевич | prob1      | 10    | 200           | 50            | 3397     | (alg | risc | neum | hw | instr | binary | stream | port | pstr | prob1) |
 ```

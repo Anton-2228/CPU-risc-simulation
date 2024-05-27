@@ -229,5 +229,5 @@ class ControlUnit:
             ret = self.decoder()
             n += 1
             if ret == 1:
-                print(n)
+                # print(n)
                 return
