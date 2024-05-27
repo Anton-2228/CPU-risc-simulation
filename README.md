@@ -18,7 +18,7 @@
 <expression> ::= {<expression_unit>}
 <expression_unit> ::= [(<operand> | ")")] [<term>] [(<operand> | "(")]
 <term> ::= "+" | "-" | "*" | "/" | "%" | "|" | "==" | "!=" | ">" | "<" 
-<operand> ::= <var> | <num> | input_int 
+<operand> ::= <var> | <num> | <input_int> 
 <input_string> ::= "input_str"
 <input_int> ::= "input_int"
 <num> ::= -?[0-9]+
