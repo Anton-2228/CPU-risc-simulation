@@ -27,7 +27,7 @@
 <string> ::= [\w\s,.:;!?()\\-]+
 ```
 ### Пример кода
-```ebnf
+```js
 let total = 0;
 let number = input_int;
 let counter = 0;
