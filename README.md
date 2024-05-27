@@ -304,7 +304,7 @@ command: 0x12 - JUMPZ | pc: 17 -> 23 | ar: 16 -> 17 | dr: 0x94000017 | r1: 30 | 
 (venv) user@user:~/Desktop/CPU-risc-simulation$ 
 ```
 
-### Пример проверки исходного теста
+### Пример проверки исходного кода
 ```commandline
 (venv) user@user:~/Desktop/CPU-risc-simulation$ python -m pytest golden_test.py 
 /home/user/Desktop/CPU-risc-simulation/venv/lib/python3.12/site-packages/pytest_golden/plugin.py:53: GoldenTestUsageWarning: Add 'enable_assertion_pass_hook=true' to pytest.ini for safer usage of pytest-golden.
