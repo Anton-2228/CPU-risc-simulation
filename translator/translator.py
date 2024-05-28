@@ -2,7 +2,7 @@ import sys
 
 from reverse_polish_notation import reverse_polish_notation
 from parser import parser
-from CPU.isa import Opcodes, read_codes, write_codes_mnem, write_codes
+from CPU.isa import Opcodes, write_codes_mnem, write_codes
 from ast_check import AST_syntax_check
 
 
