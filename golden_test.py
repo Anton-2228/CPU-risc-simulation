@@ -25,6 +25,9 @@ def test_translator_and_machine(golden):
             f.write(golden["in_int_stdin"])
 
         subprocess.Popen(["python", "./translator/translator.py", source, target]).wait()
+        with open(target_mnem, "r") as f:
+            for i in range(24):
+                print(f.readline())
         subprocess.Popen(["python", "./CPU/main.py", target, input_str, input_int, output_str, output_int, log]).wait()
 
         with open(target_mnem, "r") as f:

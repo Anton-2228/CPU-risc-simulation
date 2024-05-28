@@ -35,7 +35,7 @@ def read_codes(file):
             if instr == b'':
                 break
             num = int.from_bytes(instr)
-            print(format(num, "032b"))
+            # print(format(num, "032b"))
             instruction.append(format(num, "032b"))
     return instruction + ["00000000000000000000000000000000"] * (2 ** 22 - len(instr))
 
