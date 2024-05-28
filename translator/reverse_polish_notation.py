@@ -68,7 +68,3 @@ def shunting_yard(parsed_formula):
 
 def reverse_polish_notation(formula):
     return list(shunting_yard(formula))
-
-# print(list(shunting_yard(parser("counter % 3 == 0 | counter % 5 == 0"))))
-
-# formula = "1+3-4*2/5*(2%3%6+2*(2+4*45)%3)"

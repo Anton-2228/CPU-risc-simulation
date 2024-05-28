@@ -1,9 +1,6 @@
 # ruff: noqa: F403, F405
 
 from enum import Enum
-
-# from datapath import Datapath
-# from control_unit import ControlUnit
 from CPU import *
 
 class Signal_ip(Enum):
@@ -103,8 +100,6 @@ class Middleware():
         self.memory:Memory = memory
         self.ar:RegisterBaseCell = RegisterBaseCell("0")
         self.dr:RegisterBaseCell = RegisterBaseCell("0")
-        # self.dr_int = RegisterBaseCell("0")
-        # self.dr_short = RegisterBaseCell("0")
         self.latch_dr()
         self.datapath:Datapath = None
         self.control_unit:ControlUnit = None
@@ -135,7 +130,6 @@ class Middleware():
                 self.memory.memory_cells[self.ar.decimal].decimal = self.datapath.gen_regs[7].decimal
             case Signal_reg_write.SIGNAL_DATA_REG_WRITE:
                 self.memory.memory_cells[self.ar.decimal].decimal = self.dr.short
-                # self.memory.memory_cells[self.ar] = self.dr_short
 
     def latch_ar(self, signal):
         match signal:
@@ -147,7 +141,6 @@ class Middleware():
 class RegisterBaseCell:
     def __init__(self, binary):
         self.decimal = int(binary, 2)
-        # self.decimal = BitArray(bin=binary).uint
 
     @property
     def binary(self):

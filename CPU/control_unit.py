@@ -1,10 +1,5 @@
 # ruff: noqa: F403, F405
 
-# from isa import *
-# from middleware import *
-# from datapath import Datapath
-# from CPU import *
-
 from CPU import *
 
 
@@ -92,18 +87,10 @@ class ControlUnit:
                 self.datapath.latch_general_regs(Signal_gen_reg(f"signal_gen_reg_{first_operand}_alu"), 0)
             case Opcodes.INC.value:
                 self.datapath.latch_left_alu(Signal_left_alu(f"signal_left_alu_gen_reg_{first_operand}"))
-                # if addr_type == 0:
-                #     self.datapath.latch_right_alu(Signal_right_alu(f"signal_right_alu_gen_reg_{second_operand}"))
-                # elif addr_type == 1:
-                #     self.datapath.latch_right_alu(Signal_right_alu.SIGNAL_RIGHT_ALU_DATA_REG)
                 self.datapath.alu.inc()
                 self.datapath.latch_general_regs(Signal_gen_reg(f"signal_gen_reg_{first_operand}_alu"), 0)
             case Opcodes.DEC.value:
                 self.datapath.latch_left_alu(Signal_left_alu(f"signal_left_alu_gen_reg_{first_operand}"))
-                # if addr_type == 0:
-                #     self.datapath.latch_right_alu(Signal_right_alu(f"signal_right_alu_gen_reg_{second_operand}"))
-                # elif addr_type == 1:
-                #     self.datapath.latch_right_alu(Signal_right_alu.SIGNAL_RIGHT_ALU_DATA_REG)
                 self.datapath.alu.dec()
                 self.datapath.latch_general_regs(Signal_gen_reg(f"signal_gen_reg_{first_operand}_alu"), 0)
             case Opcodes.CMP.value:
@@ -212,14 +199,11 @@ class ControlUnit:
                     self.datapath.alu.nop_l()
                     self.datapath.latch_general_regs(Signal_gen_reg(f"signal_gen_reg_{first_operand}_alu"), 0)
             case Opcodes.HALT.value:
-                # print([x.decimal for x in self.middleware.memory.memory_cells[:50]])
                 return 1
         return 0
-        # print([x.decimal for x in self.middleware.memory.memory_cells[:50]])
 
     def start(self):
         Logger.update(self.datapath, self, self.middleware)
-        n = 0
         while True:
             Logger.log(self.datapath, self, self.middleware)
             self.middleware.latch_ar(Signal_ar.SIGNAL_AR_IP)
@@ -227,7 +211,5 @@ class ControlUnit:
             self.middleware.read_from_mem()
             self.middleware.latch_dr()
             ret = self.decoder()
-            n += 1
             if ret == 1:
-                # print(n)
                 return

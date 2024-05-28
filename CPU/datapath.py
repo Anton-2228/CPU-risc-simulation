@@ -1,7 +1,5 @@
 # ruff: noqa: F403, F405
 
-# from middleware import *
-# from control_unit import ControlUnit
 from CPU import *
 
 

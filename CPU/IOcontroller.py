@@ -8,8 +8,8 @@ class IOController:
     def __init__(self, input_str_file, input_int_file, output_str_file, output_int_file):
         self.datapath:Datapath = None
         self.current_port = None
-        input_int = loads(input_int_file.read())
-        input_str = loads(input_str_file.read())
+        input_int = loads(open(input_int_file, 'r').read())
+        input_str = loads(open(input_str_file, 'r').read())
 
         self.input_buffers = {1:input_str,
                               2:input_int}
@@ -50,11 +50,6 @@ class IOController:
                 pass
             with open(self.output_file[i], 'w') as file:
                 file.writelines(json.dumps(self.output_buffers[i]))
-        # if self.current_port == 1:
-        #     self.output_file[self.current_port].writelines(chr(self.output_buffers[self.current_port][-1]))
-        # elif self.current_port == 2:
-        #     self.output_file[self.current_port].writelines(str(self.output_buffers[self.current_port][-1]))
-        # print(self.output_buffers[1])
 
     def get_top_buffer(self, port):
         if port == 1:

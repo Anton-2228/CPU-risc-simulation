@@ -4,12 +4,11 @@ from __future__ import annotations
 
 from CPU import *
 
-
 class Logger:
     file = None
+    @staticmethod
     def init(file):
-        # Logger.file = open(file, "w")
-        Logger.file = file
+        Logger.file = open(file, "w")
     line = ""
     logs:dict[str, list[RegisterBaseCell]] = {"pc":[],
             "ar":[],
@@ -65,9 +64,5 @@ class Logger:
         Logger.line += "\n"
 
         Logger.file.writelines(Logger.line)
-        # print(Logger.line)
-        # print([x.binary for x in middleware.memory.memory_cells])
         Logger.update(datapath, control_unit, middleware)
         Logger.line = ""
-
-    # def log_io(self):

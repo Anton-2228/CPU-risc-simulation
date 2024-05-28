@@ -1,20 +1,16 @@
 # ruff: noqa: F403, F405
 
-# from datapath import Datapath
-# from control_unit import ControlUnit
-# from middleware import Middleware, Memory
-
 from CPU import *
 import sys
 
 if __name__ == "__main__":
     args = sys.argv
     machine_code_file = args[1]
-    input_str_file = open(args[2], "r")
-    input_int_file = open(args[3], "r")
+    input_str_file = args[2]
+    input_int_file = args[3]
     output_str_file = args[4]
     output_int_file = args[5]
-    log_file = open(args[6], "w")
+    log_file = args[6]
 
     codes = read_codes(machine_code_file)
     for i in codes:
@@ -39,27 +35,3 @@ if __name__ == "__main__":
 
     Logger.init(log_file)
     CU.start()
-
-    # in_str = False
-    # len_str = 0
-    # i = 0
-    # with open(IOController.output_file[1], 'r') as file:
-    #     data = loads(file.read())["outputs"]
-    #     while i < len(data):
-    #         if in_str:
-    #             for z in range(len_str):
-    #                 print(chr(data[i]), end='')
-    #                 i += 1
-    #         else:
-    #             in_str = True
-    #             len_str = data[i]
-    #             i += 1
-    #
-    # print("\n")
-    #
-    # i = 0
-    # with open(IOController.output_file[2], 'r') as file:
-    #     data = loads(file.read())["outputs"]
-    #     while i < len(data):
-    #         print(str(data[i]), end='')
-    #         i += 1

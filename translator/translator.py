@@ -432,7 +432,6 @@ def add_mnem(raw_instr, machine_instr, res_file):
     for x in range(len(raw_instr)):
         i = raw_instr[x]
         z = machine_instr[x]
-        # print(i)
         temp = f"{z} - {x}\t{hex(int(z, 2))}\t{i[0].name}"
         if i[0] in [Opcodes.INC, Opcodes.DEC]:
             instructions.append(f"{temp}\t#{i[2]}")
@@ -471,11 +470,8 @@ def generate_machine_instruction(raw_instr, res_file):
         instr += "0"*(22-len(second)) + second
 
         instructions.append(instr)
-        # instr += "\n"
-        # res_file.writelines(instr)
     add_mnem(raw_instr, instructions, res_file)
     write_codes(instructions, res_file)
-    # res_file.writelines("10111000000000000000000000000000")
 
 if __name__ == "__main__":
     a = 2
@@ -485,7 +481,6 @@ if __name__ == "__main__":
 
     tokens = parser(input_file.read())
 
-    # print(tokens)
     res = AST_syntax_check(tokens)
     assert res, "Ошибка в абстрактном синтаксическом дереве"
 
@@ -494,6 +489,5 @@ if __name__ == "__main__":
 
     translator.translate(0)
     translator.insert_vars()
-    # print(translator.instructions)
 
     generate_machine_instruction(translator.instructions, target_file)

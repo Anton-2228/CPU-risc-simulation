@@ -34,7 +34,6 @@ def AST_syntax_check(tokens):
     count_paren = 0
     count_brace = 0
     for i in range(len(tokens)):
-        # print(tokens[i])
         if i + 1 < len(tokens):
             if tokens[i][0] == "LPAREN":
                 count_paren += 1
