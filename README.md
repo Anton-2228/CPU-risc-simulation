@@ -214,35 +214,37 @@ Datapath включает в себя регистры общего назнач
 (venv) user@user:~/Desktop/CPU-risc-simulation$ cat ./tests/programs/cat.txt 
 let name = input_str;
 print_str(name);
-(venv) user@user:~/Desktop/CPU-risc-simulation$ python3 ./translator/translator.py ./tests/programs/cat.txt ./CPU/programs/comp.txt 
-(venv) user@user:~/Desktop/CPU-risc-simulation$ cat ./CPU/programs/comp.txt 
-01100000010000000000000000000001
-01001100010000000000000000010100
-10100100000000000000000000000100
-10110100010000000000000000010100
-10000100010000000000000000011001
-10110100110000000000000000011001
-00001100010000000000000000000001
-00000100110000000000000000000001
-01100000100000000000000000000001
-10000000100000000000000000000011
-01001100010000000000000000000000
-10011100000000000000000000000110
-10110100010000000000000000011001
-10000100010000000000000000011000
-01110100010000000000000000011000
-01110000100000000000000000000001
-01001100100000000000000000000000
-10010100000000000000000000010111
-00001100100000000000000000000001
-00000100010000000000000000000001
-01110000110000000000000000000001
-01101000110000000000000000000001
-10001100000000000000000000010000
-(venv) user@user:~/Desktop/CPU-risc-simulation$ python3 ./CPU/main.py ./CPU/programs/comp.txt ./CPU/inputs/input_str.json ./CPU/inputs/input_int.json ./CPU/outputs/output_str.json ./CPU/outputs/output_int.json ./CPU/log.txt 
-(venv) user@user:~/Desktop/CPU-risc-simulation$ cat ./CPU/outputs/output_str.json 
-{"outputs": [83, 97, 115, 104, 97]}
-user@user:~/Desktop/CPU-risc-simulation$ cat ./CPU/log.txt 
+(venv) user@user:~/Desktop/CPU-risc-simulation$ python3 ./translator/translator.py ./tests/programs/cat.txt ./CPU/programs/comp 
+(venv) user@user:~/Desktop/CPU-risc-simulation$ cat ./CPU/programs/mnem_comp.txt 
+01100000010000000000000000000001 - 0    0x60400001      IN      #1      $1
+01001100010000000000000000010100 - 1    0x4c400014      CMP     #1      $20
+10100100000000000000000000000100 - 2    0xa4000004      JUMPNEG $4
+10110100010000000000000000010100 - 3    0xb4400014      MOV     #1      $20
+10000100010000000000000000011001 - 4    0x84400019      STORE   #1      $25
+10110100110000000000000000011001 - 5    0xb4c00019      MOV     #3      $25
+00001100010000000000000000000001 - 6    0xc400001       SUB     #1      $1
+00000100110000000000000000000001 - 7    0x4c00001       ADD     #3      $1
+01100000100000000000000000000001 - 8    0x60800001      IN      #2      $1
+10000000100000000000000000000011 - 9    0x80800003      STORE   #2      #3
+01001100010000000000000000000000 - 10   0x4c400000      CMP     #1      $0
+10011100000000000000000000000110 - 11   0x9c000006      JUMPNZ  $6
+10110100010000000000000000011001 - 12   0xb4400019      MOV     #1      $25
+10000100010000000000000000011000 - 13   0x84400018      STORE   #1      $24
+01110100010000000000000000011000 - 14   0x74400018      LOAD    #1      $24
+01110000100000000000000000000001 - 15   0x70800001      LOAD    #2      #1
+01001100100000000000000000000000 - 16   0x4c800000      CMP     #2      $0
+10010100000000000000000000010111 - 17   0x94000017      JUMPZ   $23
+00001100100000000000000000000001 - 18   0xc800001       SUB     #2      $1
+00000100010000000000000000000001 - 19   0x4400001       ADD     #1      $1
+01110000110000000000000000000001 - 20   0x70c00001      LOAD    #3      #1
+01101000110000000000000000000001 - 21   0x68c00001      OUT     #3      $1
+10001100000000000000000000010000 - 22   0x8c000010      JUMP    $16
+10111000000000000000000000000000 - 23   0xb8000000      HALT
+(venv) user@user:~/Desktop/CPU-risc-simulation$ python3 ./translator/translator.py ./tests/programs/cat.txt 
+(venv) user@user:~/Desktop/CPU-risc-simulation$ python3 ./CPU/main.py ./CPU/programs/comp ./CPU/inputs/input_str.json ./CPU/inputs/input_int.json ./CPU/outputs/output_str.json ./CPU/outputs/output_int.json ./CPU/log.txt
+(venv) user@user:~/Desktop/CPU-risc-simulation$ cat ./CPU/outputs/output_str.json
+{"outputs": ["S", "a", "s", "h", "a"]}
+(venv) user@user:~/Desktop/CPU-risc-simulation$ cat ./CPU/log.txt 
 pc: 0 | ar: 0 | dr: 0x60400001 | r1: 0 | r2: 0 | r3: 0 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
 command: 0xc - IN | pc: 0 -> 1 | ar: 0 | dr: 0x60400001 | r1: 0 -> 5 | r2: 0 | r3: 0 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 
 command: 0x9 - CMP | pc: 1 -> 2 | ar: 0 -> 1 | dr: 0x4c400014 | r1: 5 | r2: 0 | r3: 0 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 -> 1 | 
