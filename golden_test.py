@@ -4,6 +4,7 @@ import tempfile
 
 import pytest
 
+
 @pytest.mark.golden_test("tests/*.yml")
 def test_translator_and_machine(golden):
     with tempfile.TemporaryDirectory() as tmpdir:
