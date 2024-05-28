@@ -44,7 +44,7 @@ def write_codes(instructions, file):
     with open(file, mode="wb") as f:
         for i in range(0, len(instructions), 8):
             # print(instructions[i:i+8])
-            f.write(int(instructions[i:i+8], 2).to_bytes(1))
+            f.write(int(instructions[i:i+8], 2).to_bytes(1, "big"))
 
 def write_codes_mnem(instructions, file):
     source, file = file.rsplit('/', 1)
