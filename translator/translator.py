@@ -2,7 +2,7 @@ import sys
 
 from reverse_polish_notation import reverse_polish_notation
 from parser import parser
-from CPU.isa import Opcodes
+from CPU.isa import Opcodes, read_codes, write_codes_mnem, write_codes
 from ast_check import AST_syntax_check
 
 
@@ -427,9 +427,34 @@ class Translator:
                             self.instructions[x][y] = self.strings[self.instructions[x][y][0]][0]
                         index += 1
 
+def add_mnem(raw_instr, machine_instr, res_file):
+    instructions = []
+    for x in range(len(raw_instr)):
+        i = raw_instr[x]
+        z = machine_instr[x]
+        # print(i)
+        temp = f"{z} - {x}\t{hex(int(z, 2))}\t{i[0].name}"
+        if i[0] in [Opcodes.INC, Opcodes.DEC]:
+            instructions.append(f"{temp}\t#{i[2]}")
+        elif i[0] in [Opcodes.PUSH, Opcodes.POP, Opcodes.JUMP, Opcodes.JUMPZ, Opcodes.JUMPNZ, Opcodes.JUMPNEG, Opcodes.JUMPNNEG]:
+            if i[1] == 0:
+                instructions.append(f"{temp}\t#{i[3]}")
+            elif i[1] == 1:
+                instructions.append(f"{temp}\t${i[3]}")
+        elif i[0] in [Opcodes.IN, Opcodes.OUT]:
+            instructions.append(f"{temp}\t#{i[2]}\t${i[3]}")
+        elif i[0] in [Opcodes.HALT]:
+            instructions.append(f"{temp}")
+        else:
+            if i[1] == 0:
+                instructions.append(f"{temp}\t#{i[2]}\t#{i[3]}")
+            elif i[1] == 1:
+                instructions.append(f"{temp}\t#{i[2]}\t${i[3]}")
+    write_codes_mnem(instructions, res_file)
+
 def generate_machine_instruction(raw_instr, res_file):
     instructions = []
-    # raw_instr.append([Opcodes.HALT, 0,0,0])
+    raw_instr.append([Opcodes.HALT, 0,0,0])
     for i in raw_instr:
         instr = ""
 
@@ -446,15 +471,17 @@ def generate_machine_instruction(raw_instr, res_file):
         instr += "0"*(22-len(second)) + second
 
         instructions.append(instr)
-        instr += "\n"
-        res_file.writelines(instr)
-    res_file.writelines("10111000000000000000000000000000")
+        # instr += "\n"
+        # res_file.writelines(instr)
+    add_mnem(raw_instr, instructions, res_file)
+    write_codes(instructions, res_file)
+    # res_file.writelines("10111000000000000000000000000000")
 
 if __name__ == "__main__":
     a = 2
     args = sys.argv
     input_file = open(args[1], "r", encoding="utf-8")
-    target_file = open(args[2], "w")
+    target_file = args[2]
 
     tokens = parser(input_file.read())
 

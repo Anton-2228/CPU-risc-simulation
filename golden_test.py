@@ -8,7 +8,8 @@ import pytest
 def test_translator_and_machine(golden):
     with tempfile.TemporaryDirectory() as tmpdir:
         source = os.path.join(tmpdir, "source.txt")
-        target = os.path.join(tmpdir, "target.txt")
+        target = os.path.join(tmpdir, "target")
+        target_mnem = os.path.join(tmpdir, "mnem_target.txt")
         input_str = os.path.join(tmpdir, "input_str.json")
         input_int = os.path.join(tmpdir, "input_int.json")
         output_str = os.path.join(tmpdir, "output_str.json")
@@ -25,7 +26,7 @@ def test_translator_and_machine(golden):
         subprocess.Popen(["python", "./translator/translator.py", source, target]).wait()
         subprocess.Popen(["python", "./CPU/main.py", target, input_str, input_int, output_str, output_int, log]).wait()
 
-        with open(target, "r") as f:
+        with open(target_mnem, "r") as f:
             code = f.read()
         with open(output_int, "r") as f:
             output_int = f.read()

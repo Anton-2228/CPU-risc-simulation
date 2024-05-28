@@ -9,15 +9,14 @@ import sys
 
 if __name__ == "__main__":
     args = sys.argv
-    machine_code_file = open(args[1], "r", encoding="utf-8")
+    machine_code_file = args[1]
     input_str_file = open(args[2], "r")
     input_int_file = open(args[3], "r")
     output_str_file = args[4]
     output_int_file = args[5]
     log_file = open(args[6], "w")
 
-    codes = write_codes(machine_code_file)
-
+    codes = read_codes(machine_code_file)
     for i in codes:
         if isinstance(i, str):
             assert len(i) == 32, "Длина команды не 32 бита"
