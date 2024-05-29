@@ -34,16 +34,17 @@ def AST_syntax_check(tokens):
     count_paren = 0
     count_brace = 0
     for i in range(len(tokens)):
-        if i + 1 < len(tokens):
-            if tokens[i][0] == "LPAREN":
-                count_paren += 1
-            elif tokens[i][0] == "RPAREN":
-                count_paren -= 1
-            elif tokens[i][0] == "LBRACE":
-                count_brace += 1
-            elif tokens[i][0] == "RBRACE":
-                count_brace -= 1
 
+        if tokens[i][0] == "LPAREN":
+            count_paren += 1
+        elif tokens[i][0] == "RPAREN":
+            count_paren -= 1
+        elif tokens[i][0] == "LBRACE":
+            count_brace += 1
+        elif tokens[i][0] == "RBRACE":
+            count_brace -= 1
+
+        if i + 1 < len(tokens):
             if cur_state is None and tokens[i][0] == "LPAREN":
                 cur_state = "in_expr"
             elif cur_state is None and tokens[i][0] == "ASSIGN" and tokens[i-1][0] == "NAME" and not (tokens[i+1][0] == "INPUT_STR" or tokens[i+1][0] == "STRING"):
