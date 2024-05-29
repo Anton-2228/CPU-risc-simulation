@@ -6,10 +6,10 @@ import sys
 if __name__ == "__main__":
     args = sys.argv
     machine_code_file = args[1]
-    input_str_file = args[2]
-    input_int_file = args[3]
-    output_str_file = args[4]
-    output_int_file = args[5]
+    input_1_file = args[2]
+    input_2_file = args[3]
+    output_1_file = args[4]
+    output_2_file = args[5]
     log_file = args[6]
 
     codes = read_codes(machine_code_file)
@@ -21,7 +21,7 @@ if __name__ == "__main__":
     middleware = Middleware(MEM)
     DP = Datapath()
     CU = ControlUnit()
-    IOController = IOController(input_str_file, input_int_file, output_str_file, output_int_file)
+    IOController = IOController(input_1_file, input_2_file, output_1_file, output_2_file)
 
     middleware.datapath = DP
     middleware.control_unit = CU

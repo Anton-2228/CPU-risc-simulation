@@ -127,7 +127,7 @@ print_int(total);
 - Генерация машинного кода
 
 ## Модель процессора
-Интерфейс командной строки: `python main.py <target_file> <input_str_file> <input_int_file> <output_str_file> <output_int_file> <log_file>`
+Интерфейс командной строки: `python main.py <target_file> <input_1_file> <input_2_file> <output_1_file> <output_2_file> <log_file>`
 
 Реализация представлена в [processor](./CPU/)
 
@@ -206,7 +206,7 @@ Datapath включает в себя регистры общего назнач
 
 ### Пример использования на примере программы cat
 ```commandline
-(venv) user@user:~/Desktop/CPU-risc-simulation$ cat ./CPU/inputs/input_str.json 
+(venv) user@user:~/Desktop/CPU-risc-simulation$ cat ./CPU/inputs/input_1.json 
 {
     "inputs": [
       5, "S", "a", "s", "h", "a"
@@ -241,9 +241,8 @@ print_str(name);
 01101000110000000000000000000001 - 21   0x68c00001      OUT     #3      $1
 10001100000000000000000000010000 - 22   0x8c000010      JUMP    $16
 10111000000000000000000000000000 - 23   0xb8000000      HALT
-(venv) user@user:~/Desktop/CPU-risc-simulation$ python3 ./translator/translator.py ./tests/programs/cat.txt 
-(venv) user@user:~/Desktop/CPU-risc-simulation$ python3 ./CPU/main.py ./CPU/programs/comp ./CPU/inputs/input_str.json ./CPU/inputs/input_int.json ./CPU/outputs/output_str.json ./CPU/outputs/output_int.json ./CPU/log.txt
-(venv) user@user:~/Desktop/CPU-risc-simulation$ cat ./CPU/outputs/output_str.json
+(venv) user@user:~/Desktop/CPU-risc-simulation$ python3 ./CPU/main.py ./CPU/programs/comp ./CPU/inputs/input_1.json ./CPU/inputs/input_2.json ./CPU/outputs/output_1.json ./CPU/outputs/output_2.json ./CPU/log.txt
+(venv) user@user:~/Desktop/CPU-risc-simulation$ cat ./CPU/outputs/output_1.json
 {"outputs": ["S", "a", "s", "h", "a"]}
 (venv) user@user:~/Desktop/CPU-risc-simulation$ cat ./CPU/log.txt 
 pc: 0 | ar: 0 | dr: 0x60400001 | r1: 0 | r2: 0 | r3: 0 | r4: 0 | r5: 0 | r6: 0 | r7: 0 | r8: 0 | sp: 4194304 | zf: 0 | of: 0 | ng: 0 | 

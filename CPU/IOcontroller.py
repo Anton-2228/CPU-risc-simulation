@@ -5,18 +5,18 @@ from CPU import *
 from json import loads
 
 class IOController:
-    def __init__(self, input_str_file, input_int_file, output_str_file, output_int_file):
+    def __init__(self, input_1_file, input_2_file, output_1_file, output_2_file):
         self.datapath:Datapath = None
         self.current_port = None
-        input_int = loads(open(input_int_file, 'r').read())
-        input_str = loads(open(input_str_file, 'r').read())
+        input_2 = loads(open(input_2_file, 'r').read())
+        input_1 = loads(open(input_1_file, 'r').read())
 
-        self.input_buffers = {1:input_str,
-                              2:input_int}
+        self.input_buffers = {1:input_1,
+                              2:input_2}
         self.output_buffers = {1:{"outputs": []},
                                2:{"outputs": []}}
-        self.output_file = {1:output_str_file,
-                            2:output_int_file}
+        self.output_file = {1:output_1_file,
+                            2:output_2_file}
 
     def latch_port(self, signal):
         match signal:
