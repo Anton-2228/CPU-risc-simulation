@@ -13,7 +13,7 @@ valid_next_tokens = {"LET":["NAME"],
                      "MOD":["NUMBER", "LPAREN", "NAME", "INPUT_INT"],
                      "OR":["NUMBER", "LPAREN", "NAME", "INPUT_INT"],
                      "AND":["NUMBER", "LPAREN", "NAME", "INPUT_INT"],
-                     "LPAREN":["NUMBER", "NAME", "LPAREN", "INPUT_INT", "MUL", "DIV", "MOD", "OR", "AND", "GT", "LT", "EQ", "NEQ"],
+                     "LPAREN":["NUMBER", "NAME", "LPAREN", "INPUT_INT", "MUL", "DIV", "MOD", "OR", "AND", "GT", "LT", "EQ", "NEQ", "STRING"],
                      "RPAREN":["LBRACE", "RPAREN", "SEMICOLON", "PLUS", "MINUS"],
                      "LBRACE":["LET", "NAME", "WHILE", "IF", "PRINT_INT", "PRINT_STR"],
                      "RBRACE":["LET", "NAME", "WHILE", "IF", "PRINT_INT", "PRINT_STR"],
@@ -22,11 +22,11 @@ valid_next_tokens = {"LET":["NAME"],
                      "PRINT_STR":["LPAREN"],
                      "INPUT_INT":["NUMBER", "EQ", "NEQ", "GT", "LT", "PLUS", "MINUS", "MUL", "DIV", "MOD", "OR", "AND", "SEMICOLON", "RPAREN"],
                      "INPUT_STR":["SEMICOLON"],
-                     "STRING":["SEMICOLON"],
+                     "STRING":["SEMICOLON", "RPAREN"],
                      "NAME":["ASSIGN", "NUMBER", "EQ", "NEQ", "GT", "LT", "PLUS", "MINUS", "MUL", "DIV", "MOD", "OR", "AND", "SEMICOLON", "RPAREN"],
                      "NUMBER":["EQ", "NEQ", "GT", "LT", "PLUS", "MINUS", "MUL", "DIV", "MOD", "OR", "AND", "SEMICOLON", "RPAREN"]}
 
-state = {"in_expr": ["NUMBER", "NAME", "INPUT_INT", "EQ", "NEQ", "GT", "LT", "PLUS", "MINUS", "MUL", "DIV", "MOD", "OR", "AND", "RPAREN", "LPAREN","SEMICOLON"],
+state = {"in_expr": ["NUMBER", "NAME", "INPUT_INT", "EQ", "NEQ", "GT", "LT", "PLUS", "MINUS", "MUL", "DIV", "MOD", "OR", "AND", "RPAREN", "LPAREN","SEMICOLON", "STRING"],
          None: list(valid_next_tokens.keys())}
 
 def AST_syntax_check(tokens):

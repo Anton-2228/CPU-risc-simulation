@@ -14,6 +14,8 @@ if __name__ == "__main__":
 
     codes = read_codes(machine_code_file)
     for i in codes:
+        if i != "00000000000000000000000000000000":
+            print(i)
         if isinstance(i, str):
             assert len(i) == 32, "Длина команды не 32 бита"
 

@@ -8,7 +8,7 @@ from ast_check import AST_syntax_check
 
 class Translator:
     def __init__(self):
-        self.regs = [0 for _ in range(8)]
+        # self.regs = [0 for _ in range(8)]
         self.vars = {}
         self.instructions = []
         self.tokens = None
@@ -16,6 +16,8 @@ class Translator:
         self.tmp_vars = {}
         self.strings = {}
         self.string_count = 0
+        self.static_string = {}
+        self.data = {}
 
     def trans_expr(self, expr):
         polish = reverse_polish_notation(expr)
@@ -232,13 +234,16 @@ class Translator:
         self.vars[var] = None
         match self.tokens[index+3][0]:
             case "STRING":
-                self.trans_str(tokens[index+3][1])
+                # self.trans_str(tokens[index+3][1])
+                self.static_string[var] = tokens[index + 3][1][1:-1]
             case "INPUT_STR":
                 self.input_str()
+                self.instructions.append([Opcodes.STORE, 1, 1, (var, 0)])
             case _:
                 expr = tokens[index+3:index_end]
                 self.trans_expr(expr)
-        self.instructions.append([Opcodes.STORE, 1, 1, (var, 0)])
+                self.instructions.append([Opcodes.STORE, 1, 1, (var, 0)])
+        # self.instructions.append([Opcodes.STORE, 1, 1, (var, 0)])
         return index_end
 
     def trans_var(self, index):
@@ -248,13 +253,17 @@ class Translator:
         var = tokens[index][1]
         match self.tokens[index + 2][0]:
             case "STRING":
-                self.trans_str(tokens[index + 2][1])
+                # self.trans_str(tokens[index + 2][1])
+                # self.instructions.append([Opcodes.STORE, 1, 1, (var, 0)])
+                self.static_string[var] = tokens[index + 2][1][1:-1]
             case "INPUT_STR":
                 self.input_str()
+                self.instructions.append([Opcodes.STORE, 1, 1, (var, 0)])
             case _:
                 expr = tokens[index + 2:index_end]
                 self.trans_expr(expr)
-        self.instructions.append([Opcodes.STORE, 1, 1, (var, 0)])
+                self.instructions.append([Opcodes.STORE, 1, 1, (var, 0)])
+        # self.instructions.append([Opcodes.STORE, 1, 1, (var, 0)])
         return index_end
 
     def trans_while(self, index):
@@ -323,7 +332,12 @@ class Translator:
         return end_expr
 
     def trans_print_str(self, index):
-        self.instructions.append([Opcodes.LOAD, 1, 1, (self.tokens[index+2][1], 0)])
+        if self.tokens[index+2][0] == "NAME":
+            self.instructions.append([Opcodes.LOAD, 1, 1, (self.tokens[index+2][1], 0)])
+        elif self.tokens[index+2][0] == "STRING":
+            self.static_string[self.string_count] = tokens[index + 2][1][1:-1]
+            self.instructions.append([Opcodes.MOV, 1, 1, (self.string_count, 3)])
+            self.string_count += 1
         self.instructions.append([Opcodes.LOAD, 0, 2, 1])
         # self.instructions.append([Opcodes.OUT, 0, 2, 1])
         start_print = len(self.instructions)
@@ -336,16 +350,17 @@ class Translator:
         self.instructions.append([Opcodes.JUMP, 1,0, start_print])
         return index+4
 
-    def trans_str(self, line):
-        line = line[1:-1]
-        num_line = str(self.string_count)
-        self.strings[str(self.string_count)] = None
-        self.instructions.append([Opcodes.MOV, 1, 1, len(line)])
-        self.instructions.append([Opcodes.STORE, 1, 1, (num_line, 3, 1)])
-        for i in line:
-            self.instructions.append([Opcodes.MOV, 1, 1, ord(i)])
-            self.instructions.append([Opcodes.STORE, 1, 1, (num_line, 3, 1)])
-        self.instructions.append([Opcodes.MOV, 1, 1, (num_line, 3, 0)])
+    # def trans_str(self, line):
+    #     line = line[1:-1]
+    #     self.static_string[]
+        # num_line = str(self.string_count)
+        # self.strings[str(self.string_count)] = None
+        # self.instructions.append([Opcodes.MOV, 1, 1, len(line)])
+        # self.instructions.append([Opcodes.STORE, 1, 1, (num_line, 3, 1)])
+        # for i in line:
+        #     self.instructions.append([Opcodes.MOV, 1, 1, ord(i)])
+        #     self.instructions.append([Opcodes.STORE, 1, 1, (num_line, 3, 1)])
+        # self.instructions.append([Opcodes.MOV, 1, 1, (num_line, 3, 0)])
 
 
     def input_str(self):
@@ -414,18 +429,35 @@ class Translator:
                             index += 20
                         self.instructions[x][y] = self.strings[self.instructions[x][y][0]]
 
+        # for x, i in enumerate(self.instructions):
+        #     for y, z in enumerate(self.instructions[x]):
+        #         if isinstance(self.instructions[x][y], tuple):
+        #             if self.instructions[x][y][0] in self.strings and self.instructions[x][y][1] == 3:
+        #                 if not isinstance(self.strings[self.instructions[x][y][0]], list):
+        #                     self.strings[self.instructions[x][y][0]] = [index, index]
+        #                 self.strings[self.instructions[x][y][0]][1] = index
+        #                 if self.instructions[x][y][2] == 1:
+        #                     self.instructions[x][y] = self.strings[self.instructions[x][y][0]][1]
+        #                 elif self.instructions[x][y][2] == 0:
+        #                     self.instructions[x][y] = self.strings[self.instructions[x][y][0]][0]
+        #                 index += 1
+
+        static_string_addr = {}
+        for i in self.static_string:
+            if isinstance(i, str):
+                self.data[self.vars[i]] = index
+            static_string_addr[i] = index
+            self.data[index] = len(self.static_string[i])
+            index += 1
+            for z in self.static_string[i]:
+                self.data[index] = ord(z)
+                index += 1
+
         for x, i in enumerate(self.instructions):
             for y, z in enumerate(self.instructions[x]):
                 if isinstance(self.instructions[x][y], tuple):
-                    if self.instructions[x][y][0] in self.strings and self.instructions[x][y][1] == 3:
-                        if not isinstance(self.strings[self.instructions[x][y][0]], list):
-                            self.strings[self.instructions[x][y][0]] = [index, index]
-                        self.strings[self.instructions[x][y][0]][1] = index
-                        if self.instructions[x][y][2] == 1:
-                            self.instructions[x][y] = self.strings[self.instructions[x][y][0]][1]
-                        elif self.instructions[x][y][2] == 0:
-                            self.instructions[x][y] = self.strings[self.instructions[x][y][0]][0]
-                        index += 1
+                    if self.instructions[x][y][0] in self.static_string and self.instructions[x][y][1] == 3:
+                        self.instructions[x][y] = static_string_addr[self.instructions[x][y][0]]
 
 def add_mnem(raw_instr, machine_instr, res_file):
     instructions = []
@@ -451,7 +483,8 @@ def add_mnem(raw_instr, machine_instr, res_file):
                 instructions.append(f"{temp}\t#{i[2]}\t${i[3]}")
     write_codes_mnem(instructions, res_file)
 
-def generate_machine_instruction(raw_instr, res_file):
+def generate_machine_instruction(translator, res_file):
+    raw_instr = translator.instructions
     instructions = []
     raw_instr.append([Opcodes.HALT, 0,0,0])
     for i in raw_instr:
@@ -471,6 +504,12 @@ def generate_machine_instruction(raw_instr, res_file):
 
         instructions.append(instr)
     add_mnem(raw_instr, instructions, res_file)
+
+    for i in translator.data:
+        while len(instructions) <= i:
+            instructions.append(["00000000000000000000000000000000"])
+        instructions[i] = format(translator.data[i], "032b")
+
     write_codes(instructions, res_file)
 
 if __name__ == "__main__":
@@ -490,4 +529,4 @@ if __name__ == "__main__":
     translator.translate(0)
     translator.insert_vars()
 
-    generate_machine_instruction(translator.instructions, target_file)
+    generate_machine_instruction(translator, target_file)
