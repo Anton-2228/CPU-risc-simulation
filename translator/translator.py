@@ -8,7 +8,6 @@ from ast_check import AST_syntax_check
 
 class Translator:
     def __init__(self):
-        # self.regs = [0 for _ in range(8)]
         self.vars = {}
         self.instructions = []
         self.tokens = None
@@ -19,190 +18,105 @@ class Translator:
         self.static_string = {}
         self.data = {}
 
+    def arifm_op(self, token, deep):
+        match token:
+            case "PLUS":
+                opcode = Opcodes.ADD
+            case "MINUS":
+                opcode = Opcodes.SUB
+            case "MUL":
+                opcode = Opcodes.MUL
+            case "DIV":
+                opcode = Opcodes.DIV
+            case "MOD":
+                opcode = Opcodes.MOD
+            case "OR":
+                opcode = Opcodes.OR
+            case "AND":
+                opcode = Opcodes.AND
+
+        if deep < 7:
+            self.instructions.append([opcode, 0, deep - 1, deep])
+        elif deep == 7:
+            self.instructions.append([Opcodes.POP, 0, 0, 7])
+            self.instructions.append([opcode, 0, 6, 7])
+        else:
+            self.instructions.append([Opcodes.POP, 0, 0, 8])
+            self.instructions.append([Opcodes.POP, 0, 0, 7])
+            self.instructions.append([opcode, 0, 7, 8])
+            self.instructions.append([Opcodes.PUSH, 0, 0, 7])
+
+    def logic_op(self, token, deep):
+        match token:
+            case "EQ":
+                jump_type = Opcodes.JUMPNZ
+            case "NEQ":
+                jump_type = Opcodes.JUMPZ
+            case "GT":
+                jump_type = Opcodes.JUMPNNEG
+            case "LT":
+                jump_type = Opcodes.JUMPNEG
+
+        if deep < 7:
+            self.instructions.append([Opcodes.CMP, 0, deep - 1, deep])
+            self.instructions.append([jump_type, 1, 0, len(self.instructions) + 3])
+            self.instructions.append([Opcodes.MOV, 1, deep - 1, 1])
+            self.instructions.append([Opcodes.JUMP, 1, 0, len(self.instructions) + 2])
+            self.instructions.append([Opcodes.MOV, 1, deep - 1, 0])
+        elif deep == 7:
+            self.instructions.append([Opcodes.POP, 0, 0, 7])
+            self.instructions.append([Opcodes.CMP, 0, 6, 7])
+            self.instructions.append([jump_type, 1, 0, len(self.instructions) + 3])
+            self.instructions.append([Opcodes.MOV, 1, 6, 1])
+            self.instructions.append([Opcodes.JUMP, 1, 0, len(self.instructions) + 2])
+            self.instructions.append([Opcodes.MOV, 1, 6, 0])
+        else:
+            self.instructions.append([Opcodes.POP, 0, 0, 8])
+            self.instructions.append([Opcodes.POP, 0, 0, 7])
+            self.instructions.append([Opcodes.CMP, 0, 7, 8])
+            self.instructions.append([jump_type, 1, 0, len(self.instructions) + 3])
+            self.instructions.append([Opcodes.MOV, 1, 7, 1])
+            self.instructions.append([Opcodes.JUMP, 1, 0, len(self.instructions) + 2])
+            self.instructions.append([Opcodes.MOV, 1, 7, 0])
+            self.instructions.append([Opcodes.PUSH, 0, 0, 7])
+
     def trans_expr(self, expr):
         polish = reverse_polish_notation(expr)
         deep = 0
         for i in polish:
             match i[0]:
                 case "PLUS":
-                    if deep < 7:
-                        self.instructions.append([Opcodes.ADD, 0, deep-1, deep])
-                    elif deep == 7:
-                        self.instructions.append([Opcodes.POP, 0, 0, 7])
-                        self.instructions.append([Opcodes.ADD, 0, 6, 7])
-                    else:
-                        self.instructions.append([Opcodes.POP, 0, 0, 8])
-                        self.instructions.append([Opcodes.POP, 0, 0, 7])
-                        self.instructions.append([Opcodes.ADD, 0, 7, 8])
-                        self.instructions.append([Opcodes.PUSH, 0, 0, 7])
+                    self.arifm_op("PLUS", deep)
                     deep -= 1
                 case "MINUS":
-                    if deep < 7:
-                        self.instructions.append([Opcodes.SUB, 0, deep - 1, deep])
-                    elif deep == 7:
-                        self.instructions.append([Opcodes.POP, 0, 0, 7])
-                        self.instructions.append([Opcodes.SUB, 0, 6, 7])
-                    else:
-                        self.instructions.append([Opcodes.POP, 0, 0, 8])
-                        self.instructions.append([Opcodes.POP, 0, 0, 7])
-                        self.instructions.append([Opcodes.SUB, 0, 7, 8])
-                        self.instructions.append([Opcodes.PUSH, 0, 0, 7])
+                    self.arifm_op("MINUS", deep)
                     deep -= 1
                 case "MUL":
-                    if deep < 7:
-                        self.instructions.append([Opcodes.MUL, 0, deep - 1, deep])
-                    elif deep == 7:
-                        self.instructions.append([Opcodes.POP, 0, 0, 7])
-                        self.instructions.append([Opcodes.MUL, 0, 6, 7])
-                    else:
-                        self.instructions.append([Opcodes.POP, 0, 0, 8])
-                        self.instructions.append([Opcodes.POP, 0, 0, 7])
-                        self.instructions.append([Opcodes.MUL, 0, 7, 8])
-                        self.instructions.append([Opcodes.PUSH, 0, 0, 7])
+                    self.arifm_op("MUL", deep)
                     deep -= 1
                 case "DIV":
-                    if deep < 7:
-                        self.instructions.append([Opcodes.DIV, 0, deep - 1, deep])
-                    elif deep == 7:
-                        self.instructions.append([Opcodes.POP, 0, 0, 7])
-                        self.instructions.append([Opcodes.DIV, 0, 6, 7])
-                    else:
-                        self.instructions.append([Opcodes.POP, 0, 0, 8])
-                        self.instructions.append([Opcodes.POP, 0, 0, 7])
-                        self.instructions.append([Opcodes.DIV, 0, 7, 8])
-                        self.instructions.append([Opcodes.PUSH, 0, 0, 7])
+                    self.arifm_op("DIV", deep)
                     deep -= 1
                 case "MOD":
-                    if deep < 7:
-                        self.instructions.append([Opcodes.MOD, 0, deep - 1, deep])
-                    elif deep == 7:
-                        self.instructions.append([Opcodes.POP, 0, 0, 7])
-                        self.instructions.append([Opcodes.MOD, 0, 6, 7])
-                    else:
-                        self.instructions.append([Opcodes.POP, 0, 0, 8])
-                        self.instructions.append([Opcodes.POP, 0, 0, 7])
-                        self.instructions.append([Opcodes.MOD, 0, 7, 8])
-                        self.instructions.append([Opcodes.PUSH, 0, 0, 7])
+                    self.arifm_op("MOD", deep)
                     deep -= 1
                 case "OR":
-                    if deep < 7:
-                        self.instructions.append([Opcodes.OR, 0, deep - 1, deep])
-                    elif deep == 7:
-                        self.instructions.append([Opcodes.POP, 0, 0, 7])
-                        self.instructions.append([Opcodes.OR, 0, 6, 7])
-                    else:
-                        self.instructions.append([Opcodes.POP, 0, 0, 8])
-                        self.instructions.append([Opcodes.POP, 0, 0, 7])
-                        self.instructions.append([Opcodes.OR, 0, 7, 8])
-                        self.instructions.append([Opcodes.PUSH, 0, 0, 7])
+                    self.arifm_op("OR", deep)
                     deep -= 1
                 case "AND":
-                    if deep < 7:
-                        self.instructions.append([Opcodes.AND, 0, deep - 1, deep])
-                    elif deep == 7:
-                        self.instructions.append([Opcodes.POP, 0, 0, 7])
-                        self.instructions.append([Opcodes.AND, 0, 6, 7])
-                    else:
-                        self.instructions.append([Opcodes.POP, 0, 0, 8])
-                        self.instructions.append([Opcodes.POP, 0, 0, 7])
-                        self.instructions.append([Opcodes.AND, 0, 7, 8])
-                        self.instructions.append([Opcodes.PUSH, 0, 0, 7])
+                    self.arifm_op("AND", deep)
                     deep -= 1
                 case "NEQ":
-                    if deep < 7:
-                        self.instructions.append([Opcodes.CMP, 0, deep - 1, deep])
-                        self.instructions.append([Opcodes.JUMPZ, 1, 0, len(self.instructions) + 3])
-                        self.instructions.append([Opcodes.MOV, 1, deep - 1, 1])
-                        self.instructions.append([Opcodes.JUMP, 1, 0, len(self.instructions) + 2])
-                        self.instructions.append([Opcodes.MOV, 1, deep - 1, 0])
-                    elif deep == 7:
-                        self.instructions.append([Opcodes.POP, 0, 0, 7])
-                        self.instructions.append([Opcodes.CMP, 0, 6, 7])
-                        self.instructions.append([Opcodes.JUMPZ, 1, 0, len(self.instructions) + 3])
-                        self.instructions.append([Opcodes.MOV, 1, 6, 1])
-                        self.instructions.append([Opcodes.JUMP, 1, 0, len(self.instructions) + 2])
-                        self.instructions.append([Opcodes.MOV, 1, 6, 0])
-                    else:
-                        self.instructions.append([Opcodes.POP, 0, 0, 8])
-                        self.instructions.append([Opcodes.POP, 0, 0, 7])
-                        self.instructions.append([Opcodes.CMP, 0, 7, 8])
-                        self.instructions.append([Opcodes.JUMPZ, 1, 0, len(self.instructions) + 3])
-                        self.instructions.append([Opcodes.MOV, 1, 7, 1])
-                        self.instructions.append([Opcodes.JUMP, 1, 0, len(self.instructions) + 2])
-                        self.instructions.append([Opcodes.MOV, 1, 7, 0])
-                        self.instructions.append([Opcodes.PUSH, 0, 0, 7])
+                    self.logic_op("NEQ", deep)
                     deep -= 1
                 case "EQ":
-                    if deep < 7:
-                        self.instructions.append([Opcodes.CMP, 0, deep - 1, deep])
-                        self.instructions.append([Opcodes.JUMPNZ, 1, 0, len(self.instructions) + 3])
-                        self.instructions.append([Opcodes.MOV, 1, deep - 1, 1])
-                        self.instructions.append([Opcodes.JUMP, 1, 0, len(self.instructions) + 2])
-                        self.instructions.append([Opcodes.MOV, 1, deep - 1, 0])
-                    elif deep == 7:
-                        self.instructions.append([Opcodes.POP, 0, 0, 7])
-                        self.instructions.append([Opcodes.CMP, 0, 6, 7])
-                        self.instructions.append([Opcodes.JUMPNZ, 1, 0, len(self.instructions) + 3])
-                        self.instructions.append([Opcodes.MOV, 1, 6, 1])
-                        self.instructions.append([Opcodes.JUMP, 1, 0, len(self.instructions) + 2])
-                        self.instructions.append([Opcodes.MOV, 1, 6, 0])
-                    else:
-                        self.instructions.append([Opcodes.POP, 0, 0, 8])
-                        self.instructions.append([Opcodes.POP, 0, 0, 7])
-                        self.instructions.append([Opcodes.CMP, 0, 7, 8])
-                        self.instructions.append([Opcodes.JUMPNZ, 1, 0, len(self.instructions) + 3])
-                        self.instructions.append([Opcodes.MOV, 1, 7, 1])
-                        self.instructions.append([Opcodes.JUMP, 1, 0, len(self.instructions) + 2])
-                        self.instructions.append([Opcodes.MOV, 1, 7, 0])
-                        self.instructions.append([Opcodes.PUSH, 0, 0, 7])
+                    self.logic_op("EQ", deep)
                     deep -= 1
                 case "GT":
-                    if deep < 7:
-                        self.instructions.append([Opcodes.CMP, 0, deep - 1, deep])
-                        self.instructions.append([Opcodes.JUMPNNEG, 1, 0, len(self.instructions) + 3])
-                        self.instructions.append([Opcodes.MOV, 1, deep - 1, 1])
-                        self.instructions.append([Opcodes.JUMP, 1, 0, len(self.instructions) + 2])
-                        self.instructions.append([Opcodes.MOV, 1, deep - 1, 0])
-                    elif deep == 7:
-                        self.instructions.append([Opcodes.POP, 0, 0, 7])
-                        self.instructions.append([Opcodes.CMP, 0, 6, 7])
-                        self.instructions.append([Opcodes.JUMPNNEG, 1, 0, len(self.instructions) + 3])
-                        self.instructions.append([Opcodes.MOV, 1, 6, 1])
-                        self.instructions.append([Opcodes.JUMP, 1, 0, len(self.instructions) + 2])
-                        self.instructions.append([Opcodes.MOV, 1, 6, 0])
-                    else:
-                        self.instructions.append([Opcodes.POP, 0, 0, 8])
-                        self.instructions.append([Opcodes.POP, 0, 0, 7])
-                        self.instructions.append([Opcodes.CMP, 0, 7, 8])
-                        self.instructions.append([Opcodes.JUMPNNEG, 1, 0, len(self.instructions) + 3])
-                        self.instructions.append([Opcodes.MOV, 1, 7, 1])
-                        self.instructions.append([Opcodes.JUMP, 1, 0, len(self.instructions) + 2])
-                        self.instructions.append([Opcodes.MOV, 1, 7, 0])
-                        self.instructions.append([Opcodes.PUSH, 0, 0, 7])
+                    self.logic_op("GT", deep)
                     deep -= 1
                 case "LT":
-                    if deep < 7:
-                        self.instructions.append([Opcodes.CMP, 0, deep - 1, deep])
-                        self.instructions.append([Opcodes.JUMPNEG, 1, 0, len(self.instructions) + 3])
-                        self.instructions.append([Opcodes.MOV, 1, deep - 1, 1])
-                        self.instructions.append([Opcodes.JUMP, 1, 0, len(self.instructions) + 2])
-                        self.instructions.append([Opcodes.MOV, 1, deep - 1, 0])
-                    elif deep == 7:
-                        self.instructions.append([Opcodes.POP, 0, 0, 7])
-                        self.instructions.append([Opcodes.CMP, 0, 6, 7])
-                        self.instructions.append([Opcodes.JUMPNEG, 1, 0, len(self.instructions) + 3])
-                        self.instructions.append([Opcodes.MOV, 1, 6, 1])
-                        self.instructions.append([Opcodes.JUMP, 1, 0, len(self.instructions) + 2])
-                        self.instructions.append([Opcodes.MOV, 1, 6, 0])
-                    else:
-                        self.instructions.append([Opcodes.POP, 0, 0, 8])
-                        self.instructions.append([Opcodes.POP, 0, 0, 7])
-                        self.instructions.append([Opcodes.CMP, 0, 7, 8])
-                        self.instructions.append([Opcodes.JUMPNEG, 1, 0, len(self.instructions) + 3])
-                        self.instructions.append([Opcodes.MOV, 1, 7, 1])
-                        self.instructions.append([Opcodes.JUMP, 1, 0, len(self.instructions) + 2])
-                        self.instructions.append([Opcodes.MOV, 1, 7, 0])
-                        self.instructions.append([Opcodes.PUSH, 0, 0, 7])
+                    self.logic_op("LT", deep)
                     deep -= 1
                 case "NAME":
                     deep += 1
@@ -234,7 +148,6 @@ class Translator:
         self.vars[var] = None
         match self.tokens[index+3][0]:
             case "STRING":
-                # self.trans_str(tokens[index+3][1])
                 self.static_string[var] = tokens[index + 3][1][1:-1]
             case "INPUT_STR":
                 self.input_str()
@@ -243,7 +156,6 @@ class Translator:
                 expr = tokens[index+3:index_end]
                 self.trans_expr(expr)
                 self.instructions.append([Opcodes.STORE, 1, 1, (var, 0)])
-        # self.instructions.append([Opcodes.STORE, 1, 1, (var, 0)])
         return index_end
 
     def trans_var(self, index):
@@ -253,8 +165,6 @@ class Translator:
         var = tokens[index][1]
         match self.tokens[index + 2][0]:
             case "STRING":
-                # self.trans_str(tokens[index + 2][1])
-                # self.instructions.append([Opcodes.STORE, 1, 1, (var, 0)])
                 self.static_string[var] = tokens[index + 2][1][1:-1]
             case "INPUT_STR":
                 self.input_str()
@@ -263,7 +173,6 @@ class Translator:
                 expr = tokens[index + 2:index_end]
                 self.trans_expr(expr)
                 self.instructions.append([Opcodes.STORE, 1, 1, (var, 0)])
-        # self.instructions.append([Opcodes.STORE, 1, 1, (var, 0)])
         return index_end
 
     def trans_while(self, index):
@@ -350,19 +259,6 @@ class Translator:
         self.instructions.append([Opcodes.JUMP, 1,0, start_print])
         return index+4
 
-    # def trans_str(self, line):
-    #     line = line[1:-1]
-    #     self.static_string[]
-        # num_line = str(self.string_count)
-        # self.strings[str(self.string_count)] = None
-        # self.instructions.append([Opcodes.MOV, 1, 1, len(line)])
-        # self.instructions.append([Opcodes.STORE, 1, 1, (num_line, 3, 1)])
-        # for i in line:
-        #     self.instructions.append([Opcodes.MOV, 1, 1, ord(i)])
-        #     self.instructions.append([Opcodes.STORE, 1, 1, (num_line, 3, 1)])
-        # self.instructions.append([Opcodes.MOV, 1, 1, (num_line, 3, 0)])
-
-
     def input_str(self):
         line = str(self.string_count)
         self.strings[line] = None
@@ -429,19 +325,6 @@ class Translator:
                             index += 20
                         self.instructions[x][y] = self.strings[self.instructions[x][y][0]]
 
-        # for x, i in enumerate(self.instructions):
-        #     for y, z in enumerate(self.instructions[x]):
-        #         if isinstance(self.instructions[x][y], tuple):
-        #             if self.instructions[x][y][0] in self.strings and self.instructions[x][y][1] == 3:
-        #                 if not isinstance(self.strings[self.instructions[x][y][0]], list):
-        #                     self.strings[self.instructions[x][y][0]] = [index, index]
-        #                 self.strings[self.instructions[x][y][0]][1] = index
-        #                 if self.instructions[x][y][2] == 1:
-        #                     self.instructions[x][y] = self.strings[self.instructions[x][y][0]][1]
-        #                 elif self.instructions[x][y][2] == 0:
-        #                     self.instructions[x][y] = self.strings[self.instructions[x][y][0]][0]
-        #                 index += 1
-
         static_string_addr = {}
         for i in self.static_string:
             if isinstance(i, str):
@@ -507,7 +390,7 @@ def generate_machine_instruction(translator, res_file):
 
     for i in translator.data:
         while len(instructions) <= i:
-            instructions.append(["00000000000000000000000000000000"])
+            instructions.append("00000000000000000000000000000000")
         instructions[i] = format(translator.data[i], "032b")
 
     write_codes(instructions, res_file)

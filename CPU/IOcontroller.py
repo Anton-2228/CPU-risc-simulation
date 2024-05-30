@@ -43,7 +43,6 @@ class IOController:
                 self.output_buffers[self.current_port]["outputs"].append(self.datapath.gen_regs[6].decimal)
             case Signal_reg_write_io.SIGNAL_REG_8_WRITE_IO:
                 self.output_buffers[self.current_port]["outputs"].append(self.datapath.gen_regs[7].decimal)
-        print(bin(self.output_buffers[self.current_port]["outputs"][-1]))
         if self.current_port == 1:
             self.output_buffers[self.current_port]["outputs"][-1] = chr(self.output_buffers[self.current_port]["outputs"][-1])
         for i in range(1, 3):

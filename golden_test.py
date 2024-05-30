@@ -29,6 +29,7 @@ def test_translator_and_machine(golden):
 
         with open(target_mnem, "r") as f:
             code = f.read()
+            print(code)
         with open(output_2, "r") as f:
             output_2 = f.read()
         with open(output_1, "r") as f:

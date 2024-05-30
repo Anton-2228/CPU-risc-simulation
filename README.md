@@ -240,8 +240,7 @@ print_str(name);
 01110000110000000000000000000001 - 20   0x70c00001      LOAD    #3      #1
 01101000110000000000000000000001 - 21   0x68c00001      OUT     #3      $1
 10001100000000000000000000010000 - 22   0x8c000010      JUMP    $16
-10111000000000000000000000000000 - 23   0xb8000000      HALT
-(venv) user@user:~/Desktop/CPU-risc-simulation$ python3 ./CPU/main.py ./CPU/programs/comp ./CPU/inputs/input_1.json ./CPU/inputs/input_2.json ./CPU/outputs/output_1.json ./CPU/outputs/output_2.json ./CPU/log.txt
+(venv) user@user:~/Desktop/CPU-risc-simulation$ python3 ./CPU/main.py ./CPU/programs/comp ./CPU/inputs/input_1.json ./CPU/inputs/input_2.json ./CPU/outputs/output_1.json ./CPU/outputs/output_2.json ./CPU/log.txtputs/output_1.json ./CPU/outputs/output_2.json ./CPU/log.txt
 (venv) user@user:~/Desktop/CPU-risc-simulation$ cat ./CPU/outputs/output_1.json
 {"outputs": ["S", "a", "s", "h", "a"]}
 (venv) user@user:~/Desktop/CPU-risc-simulation$ cat ./CPU/log.txt 
@@ -354,8 +353,8 @@ jobs содержит в себе 3 задачи:
 ### Аналитика алгоритмов
 ```
 | ФИО                      | <алг>      | <LoC> | <code байт>   | <code инстр.> | <инстр.> | вариант |
-| Зинченко Антон Андреевич | hello      | 2     | 152           | 38            | 117      | (alg | risc | neum | hw | instr | binary | stream | port | pstr | prob1) |
-| Зинченко Антон Андреевич | cat        | 2     | 96            | 24            | 77       | (alg | risc | neum | hw | instr | binary | stream | port | pstr | prob1) |
-| Зинченко Антон Андреевич | hello_user | 4     | 204           | 51            | 148      | (alg | risc | neum | hw | instr | binary | stream | port | pstr | prob1) |
+| Зинченко Антон Андреевич | hello      | 2     | 96            | 10            | 89       | (alg | risc | neum | hw | instr | binary | stream | port | pstr | prob1) |
+| Зинченко Антон Андреевич | cat        | 2     | 180           | 24            | 77       | (alg | risc | neum | hw | instr | binary | stream | port | pstr | prob1) |
+| Зинченко Антон Андреевич | hello_user | 4     | 356           | 42            | 253      | (alg | risc | neum | hw | instr | binary | stream | port | pstr | prob1) |
 | Зинченко Антон Андреевич | prob1      | 10    | 200           | 50            | 3397     | (alg | risc | neum | hw | instr | binary | stream | port | pstr | prob1) |
 ```
